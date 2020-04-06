@@ -1,0 +1,32 @@
+version: "2.4"
+services:
+  qbittorrent:
+    image: linuxserver/qbittorrent
+    container_name: qbittorrent
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Moscow
+      - UMASK_SET=022
+      - WEBUI_PORT=8080
+      - LETSENCRYPT_HOST=torrent.vlad.best
+      - VIRTUAL_HOST=torrent.vlad.best
+      - VIRTUAL_PORT=8080
+    volumes:
+      - qbittorrent-config:/config
+      - /media/hdd3:/downloads
+      - /media/hdd1:/hdd1
+      - /media/hdd2:/hdd2
+    ports:
+      - 6881:6881
+      - 6881:6881/udp
+    restart: unless-stopped
+    networks:
+      - frontend
+networks:
+  frontend:
+    external: true
+volumes:
+  qbittorrent-config:
+    name: qbittorrent
+
