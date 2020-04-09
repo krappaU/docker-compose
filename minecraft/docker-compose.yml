@@ -34,7 +34,7 @@ services:
       EULA: "TRUE"
       MEMORY: 2G
       ENABLE_RCON: "true"
-      RCON_PASSWORD: "11"
+      RCON_PASSWORD: "22"
       RCON_PORT: "25575"
     restart: unless-stopped
   map:
@@ -55,8 +55,8 @@ services:
   skins:
     depends_on:
       - database
-    image: c8e5701aa986
     container_name: minecraft_skins
+    build: skins/.
     networks:
       - backend
       - frontend
@@ -77,6 +77,4 @@ networks:
 volumes:
   database:
     name: minecraft_database
-
-
 
