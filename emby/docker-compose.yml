@@ -1,0 +1,28 @@
+version: '2.4'
+
+services:
+  emby:
+    image: emby/embyserver:latest
+    container_name: emby
+    ports:
+      - 8096:8096
+    volumes:
+      - emby:/config
+      - /media/hdd1:/hdd1
+      - /media/hdd2:/hdd2
+      - /media/hdd3:/hdd3
+    networks: 
+      - frontend
+    environment:
+      VIRTUAL_HOST: "emby.vlad.best"
+      VIRTUAL_PORT: "8096"
+      LETSENCRYPT_HOST: "emby.vlad.best"
+    devices:
+      - /dev/dri:/dev/dri
+volumes:
+  emby:
+    name: emby
+
+networks:
+  frontend:
+    external: true

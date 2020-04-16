@@ -1,0 +1,80 @@
+version: "2.4"
+
+services:
+  database:
+    image: mariadb
+    container_name: minecraft_database
+    hostname: database
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: deleted 
+    networks:
+      - backend
+    volumes:
+      - "database:/var/lib/mysql"
+  server:
+    depends_on:
+      - database
+    image: itzg/minecraft-server:adopt13
+    container_name: minecraft_server
+    command: --noconsole
+    ports:
+      - "25565:25565"
+      - "25575:25575"
+    volumes:
+      - "/srv/minecraft/:/data"
+    networks:
+      - backend
+      - frontend
+    environment:
+      VERSION: "LATEST"
+      CONSOLE: "false"
+      SERVER_NAME: "vlad.best"
+      TYPE: "PAPER"
+      EULA: "TRUE"
+      MEMORY: 2G
+      ENABLE_RCON: "true"
+      RCON_PASSWORD: ""
+      RCON_PORT: "25575"
+    restart: unless-stopped
+  map:
+    depends_on:
+      - database
+    image: richarvey/nginx-php-fpm:latest
+    container_name: minecraft_map
+    networks:
+      - backend
+      - frontend
+    environment:
+      VIRTUAL_HOST: "map.vlad.best"
+      VIRTUAL_PORT: "80"
+      LETSENCRYPT_HOST: "map.vlad.best"
+    volumes:
+      - "/srv/minecraft/plugins/dynmap/web:/var/www/html/"
+    restart: unless-stopped
+  skins:
+    depends_on:
+      - database
+    container_name: minecraft_skins
+    build: skins/.
+    networks:
+      - backend
+      - frontend
+    environment:
+      VIRTUAL_HOST: "skins.vlad.best"
+      VIRTUAL_PORT: "80"
+      LETSENCRYPT_HOST: "skins.vlad.best"
+    restart: unless-stopped
+
+networks:
+  backend:
+    name: minecraft_backend
+    internal: true
+  frontend:
+    external: true
+
+
+volumes:
+  database:
+    name: minecraft_database
+
