@@ -3,6 +3,7 @@ version: '2.4'
 services:
   emby:
     image: emby/embyserver:latest
+    restart: always 
     container_name: emby
     ports:
       - 8096:8096
@@ -14,9 +15,9 @@ services:
     networks: 
       - frontend
     environment:
-      VIRTUAL_HOST: "emby.vlad.best"
+      VIRTUAL_HOST: "emby.${EXT_HOST}"
       VIRTUAL_PORT: "8096"
-      LETSENCRYPT_HOST: "emby.vlad.best"
+      LETSENCRYPT_HOST: "emby.${EXT_HOST}"
     devices:
       - /dev/dri:/dev/dri
 volumes:

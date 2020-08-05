@@ -9,8 +9,8 @@ services:
       - TZ=Europe/Moscow
       - UMASK_SET=022
       - WEBUI_PORT=8080
-      - LETSENCRYPT_HOST=torrent.vlad.best
-      - VIRTUAL_HOST=torrent.vlad.best
+      - LETSENCRYPT_HOST=torrent.${EXT_HOST}
+      - VIRTUAL_HOST=torrent.${EXT_HOST}
       - VIRTUAL_PORT=8080
     volumes:
       - qbittorrent-config:/config
@@ -20,7 +20,7 @@ services:
     ports:
       - 6881:6881
       - 6881:6881/udp
-    restart: unless-stopped
+    restart: always
     networks:
       - frontend
 networks:

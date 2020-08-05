@@ -5,6 +5,7 @@ services:
   portainer:
     image: portainer/portainer
     container_name: portainer
+    restart: unless-stopped
     ports:
       - 8000:8000
       - 9000:9000
@@ -12,22 +13,23 @@ services:
       - data:/data
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
-      VIRTUAL_HOST: "docker.vlad.best"
+      VIRTUAL_HOST: "docker.${EXT_HOST}"
       VIRTUAL_PORT: "9000"
-      LETSENCRYPT_HOST: "docker.vlad.best"
+      LETSENCRYPT_HOST: "docker.${EXT_HOST}"
     networks:
       - frontend
   agent:
     image: portainer/agent
     container_name: portainer_agent
+    restart: always 
     volumes:
       - /var/lib/docker/volumes:/var/lib/docker/volumes
       - /var/run/docker.sock:/var/run/docker.sock
       - agent_data:/data
     environment:
-      EDGE_KEY: aHR0cDovL3NlbmR0by5ob3N0OjkwMDB8c2VuZHRvLmhvc3Q6ODAwMHxkMzpiYToxMDoxYTo0YjpkNDplYjpjNTpiZDoxNjphNzpmNTplMToyNDoyNDo3ZXwz
-      EDGE: 1
-      EDGE_ID: ace14c39-3fb7-41c4-94b0-d48ffbe113f8
+      EDGE_KEY: ${EDGE_KEY} 
+      EDGE: ${EDGE}
+      EDGE_ID: ${EDGE_ID} 
 
 networks:
   frontend:

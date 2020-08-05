@@ -1,0 +1,22 @@
+version: '2.4'
+
+services:
+  etesync:
+    image: victorrds/etesync
+    restart: always 
+    container_name: etesync
+    volumes:
+      - data:/data
+    networks: 
+      - frontend
+    environment:
+      VIRTUAL_HOST: "sync.${EXT_HOST}"
+      VIRTUAL_PORT: "3735"
+      LETSENCRYPT_HOST: "sync.${EXT_HOST}"
+volumes:
+  data:
+    name: etesync
+
+networks:
+  frontend:
+    external: true

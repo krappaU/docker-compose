@@ -1,0 +1,46 @@
+version: "2.4"
+services:
+  netcloud:
+    image: nextcloud
+    container_name: nextcloud_main
+    environment:
+      - LETSENCRYPT_HOST=nextcloud.${EXT_HOST}
+      - VIRTUAL_HOST=nextcloud.${EXT_HOST}
+      - MYSQL_HOST=db
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - VIRTUAL_PORT=80
+    volumes:
+      - www:/var/www/html
+      - /media/hdd3:/downloads
+      - /media/hdd1:/hdd1
+      - /media/hdd2:/hdd2
+    restart: always
+    networks:
+      - frontend
+      - backend
+  db:
+    image: mariadb
+    container_name: nextcloud_db
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    restart: always
+    volumes:
+      - db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+    networks:
+      - backend
+networks:
+  frontend:
+    external: true
+  backend:
+    name: nextcloud_backend
+    internal: true
+
+volumes:
+  www:
+  db:
