@@ -10,9 +10,9 @@ services:
     networks: 
       - frontend
     environment:
-      VIRTUAL_HOST: "sync.${EXT_HOST}"
-      VIRTUAL_PORT: "3735"
-      LETSENCRYPT_HOST: "sync.${EXT_HOST}"
+      - VIRTUAL_HOST=sync.${EXT_HOST}
+      - VIRTUAL_PORT=3735
+      - LETSENCRYPT_HOST=sync.${EXT_HOST}
 volumes:
   data:
     name: etesync

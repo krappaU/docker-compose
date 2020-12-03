@@ -13,9 +13,9 @@ services:
       - data:/data
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
-      VIRTUAL_HOST: "docker.${EXT_HOST}"
-      VIRTUAL_PORT: "9000"
-      LETSENCRYPT_HOST: "docker.${EXT_HOST}"
+      - VIRTUAL_HOST=docker.${EXT_HOST}
+      - VIRTUAL_PORT=9000
+      - LETSENCRYPT_HOST=docker.${EXT_HOST}
     networks:
       - frontend
   agent:
@@ -27,9 +27,9 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - agent_data:/data
     environment:
-      EDGE_KEY: ${EDGE_KEY} 
-      EDGE: ${EDGE}
-      EDGE_ID: ${EDGE_ID} 
+      - EDGE_KEY
+      - EDGE
+      - EDGE_ID
 
 networks:
   frontend:

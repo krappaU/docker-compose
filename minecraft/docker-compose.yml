@@ -8,11 +8,11 @@ services:
     command: --max_allowed_packet=32505856
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+      - MYSQL_ROOT_PASSWORD
     networks:
       - backend
     volumes:
-      - "/media/hdd1/minecraft_data:/var/lib/mysql"
+      - /media/hdd1/minecraft_data:/var/lib/mysql
   server:
     depends_on:
       - database
@@ -20,23 +20,23 @@ services:
     container_name: minecraft_server
     command: --noconsole
     ports:
-      - "25565:25565"
-      - "25575:25575"
+      - 25565:25565
+      - 25575:25575
     volumes:
-      - "/srv/minecraft/:/data"
+      - /srv/minecraft/:/data
     networks:
       - backend
       - frontend
     environment:
-      VERSION: "LATEST"
-      CONSOLE: "FALSE"
-      SERVER_NAME: "Home, sweet home"
-      TYPE: "PAPER"
-      EULA: "TRUE"
-      MEMORY: "2G"
-      ENABLE_RCON: "TRUE"
-      RCON_PASSWORD: "${RCON_PASSWORD}"
-      RCON_PORT: "25575"
+      - VERSION=LATEST
+      - CONSOLE=FALSE
+      - SERVER_NAME=Home, sweet home
+      - TYPE=PAPER
+      - EULA=TRUE
+      - MEMORY=2G
+      - ENABLE_RCON=TRUE
+      - RCON_PASSWORD
+      - RCON_PORT=25575
     restart: always
   map:
     depends_on:
@@ -47,11 +47,11 @@ services:
       - backend
       - frontend
     environment:
-      VIRTUAL_HOST: "map.${EXT_HOST}"
-      VIRTUAL_PORT: "80"
-      LETSENCRYPT_HOST: "map.${EXT_HOST}"
+      - VIRTUAL_HOST=map.${EXT_HOST}
+      - VIRTUAL_PORT=80
+      - LETSENCRYPT_HOST=map.${EXT_HOST}
     volumes:
-      - "/srv/minecraft/plugins/dynmap/web:/var/www/html/"
+      - /srv/minecraft/plugins/dynmap/web:/var/www/html/
     restart: always
   skins:
     depends_on:
@@ -62,9 +62,9 @@ services:
       - backend
       - frontend
     environment:
-      VIRTUAL_HOST: "skins.${EXT_HOST}"
-      VIRTUAL_PORT: "80"
-      LETSENCRYPT_HOST: "skins.${EXT_HOST}"
+      - VIRTUAL_HOST=skins.${EXT_HOST}
+      - VIRTUAL_PORT=80
+      - LETSENCRYPT_HOST=skins.${EXT_HOST}
     restart: always
 
 networks:

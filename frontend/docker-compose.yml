@@ -23,7 +23,7 @@ services:
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
     labels:
-      - "com.github.jrcs.letsencrypt_nginx_proxy_companion.docker_gen"
+      - com.github.jrcs.letsencrypt_nginx_proxy_companion.docker_gen
     networks:
       - frontend
 

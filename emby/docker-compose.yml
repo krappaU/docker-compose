@@ -15,9 +15,9 @@ services:
     networks: 
       - frontend
     environment:
-      VIRTUAL_HOST: "emby.${EXT_HOST}"
-      VIRTUAL_PORT: "8096"
-      LETSENCRYPT_HOST: "emby.${EXT_HOST}"
+      - VIRTUAL_HOST=emby.${EXT_HOST}
+      - VIRTUAL_PORT=8096
+      - LETSENCRYPT_HOST=emby.${EXT_HOST}
     devices:
       - /dev/dri:/dev/dri
 volumes:
