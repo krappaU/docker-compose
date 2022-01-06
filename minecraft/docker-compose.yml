@@ -8,11 +8,11 @@ services:
     command: --max_allowed_packet=32505856
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+      - MYSQL_ROOT_PASSWORD
     networks:
       - backend
     volumes:
-      - "/media/hdd1/minecraft_data:/var/lib/mysql"
+      - /media/hdd1/minecraft_data:/var/lib/mysql
   server:
     depends_on:
       - database
@@ -22,7 +22,7 @@ services:
     ports:
       - "25566:25565"
     volumes:
-      - "/srv/minecraft/:/data"
+      - /srv/minecraft/:/data
     networks:
       - backend
       - frontend
@@ -47,7 +47,7 @@ services:
       - backend
       - frontend
     volumes:
-      - "/srv/minecraft/plugins/dynmap/web:/var/www/html/"
+      - /srv/minecraft/plugins/dynmap/web:/var/www/html/
     restart: always
     labels:
       - "traefik.enable=true"
