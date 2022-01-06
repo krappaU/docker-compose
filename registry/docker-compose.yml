@@ -1,0 +1,27 @@
+version: '2.4'
+
+services:
+  registry:
+    image: registry:2
+    restart: always 
+    container_name: registry
+    ports:
+      - 5000:5000
+    volumes:
+      - data:/var/lib/registry
+      - /home/litt/auth:/auth
+    networks: 
+      - frontend
+    environment:
+      REGISTRY_AUTH: htpasswd
+      REGISTRY_AUTH_HTPASSWD_PATH: /auth/htpasswd
+      REGISTRY_AUTH_HTPASSWD_REALM: Registry Realm
+    labels:
+      - "traefik.enable=true"
+volumes:
+  data:
+    name: registry
+
+networks:
+  frontend:
+    external: true

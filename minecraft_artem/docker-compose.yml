@@ -1,0 +1,28 @@
+version: "2.4"
+
+services:
+  server:
+    image: itzg/minecraft-server:latest
+    container_name: minecraft_artem
+    ports:
+      - "25565:25565"
+      - "25575:25575"
+    volumes:
+      - "/srv/minecraft_artem_2022/:/data"
+    networks:
+      - frontend
+    environment:
+      VERSION: "LATEST"
+      SERVER_NAME: "Server 228"
+      TYPE: "VANILLA"
+      EULA: "TRUE"
+      MEMORY: "4G"
+      ENABLE_RCON: "TRUE"
+      RCON_PASSWORD: "${RCON_PASSWORD}"
+      RCON_PORT: "25575"
+    restart: unless-stopped
+
+networks:
+  frontend:
+    external: true
+

@@ -1,0 +1,32 @@
+version: '2.4'
+services:
+  arma3:
+    image: synixebrett/arma3server
+    container_name: arma3
+    ports:
+      - "2302-2306:2302-2306/udp"
+    volumes:
+      - /srv/arma3/missions:/arma3/mpmissions
+      - /srv/arma3/configs:/arma3/configs
+      - /srv/arma3/mods:/arma3/mods
+      - /srv/arma3/servermods:/arma3/servermods
+      - steamcmd:/steamcmd
+    environment:
+       ARMA_BINARY: "./arma3server_x64"
+       ARMA_CDLC: ""
+       ARMA_CONFIG: "main.cfg"
+       ARMA_LIMITFPS: "100"
+       ARMA_PROFILE: "main"
+       ARMA_WORLD: "empty"
+       HEADLESS_CLIENTS: "0"
+       MODS_LOCAL: "true"
+       MODS_PRESET: ""
+       PORT: "2302"
+       STEAM_BRANCH: "public"
+       STEAM_USER: "${STEAM_USER}"
+       STEAM_PASSWORD: "${STEAM_PASSWORD}"
+    restart: unless-stopped
+volumes:
+  steamcmd:
+    name: arma3_steamcmd
+

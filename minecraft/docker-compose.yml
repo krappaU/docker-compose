@@ -16,12 +16,11 @@ services:
   server:
     depends_on:
       - database
-    image: itzg/minecraft-server:adopt13
+    image: itzg/minecraft-server:latest
     container_name: minecraft_server
     command: --noconsole
     ports:
-      - "25565:25565"
-      - "25575:25575"
+      - "25566:25565"
     volumes:
       - "/srv/minecraft/:/data"
     networks:
@@ -33,26 +32,26 @@ services:
       SERVER_NAME: "Home, sweet home"
       TYPE: "PAPER"
       EULA: "TRUE"
-      MEMORY: "2G"
+      MEMORY: "4G"
       ENABLE_RCON: "TRUE"
       RCON_PASSWORD: "${RCON_PASSWORD}"
       RCON_PORT: "25575"
+      SPIGET_RESOURCES: "9368"
     restart: always
   map:
     depends_on:
       - database
-    image: richarvey/nginx-php-fpm:latest
+    image: richarvey/nginx-php-fpm:1.10.3
     container_name: minecraft_map
     networks:
       - backend
       - frontend
-    environment:
-      VIRTUAL_HOST: "map.${EXT_HOST}"
-      VIRTUAL_PORT: "80"
-      LETSENCRYPT_HOST: "map.${EXT_HOST}"
     volumes:
       - "/srv/minecraft/plugins/dynmap/web:/var/www/html/"
     restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.custom.subdomain=map"
   skins:
     depends_on:
       - database
@@ -61,10 +60,10 @@ services:
     networks:
       - backend
       - frontend
-    environment:
-      VIRTUAL_HOST: "skins.${EXT_HOST}"
-      VIRTUAL_PORT: "80"
-      LETSENCRYPT_HOST: "skins.${EXT_HOST}"
+    labels:
+      - "traefik.enable=true"
+    volumes:
+      - ./config.nogit.php:/var/www/html/config.nogit.php
     restart: always
 
 networks:

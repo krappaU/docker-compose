@@ -3,7 +3,7 @@ version: "2.4"
 services:
   
   portainer:
-    image: portainer/portainer
+    image: portainer/portainer-ce
     container_name: portainer
     restart: unless-stopped
     ports:
@@ -12,24 +12,12 @@ services:
     volumes:
       - data:/data
       - /var/run/docker.sock:/var/run/docker.sock
-    environment:
-      VIRTUAL_HOST: "docker.${EXT_HOST}"
-      VIRTUAL_PORT: "9000"
-      LETSENCRYPT_HOST: "docker.${EXT_HOST}"
     networks:
       - frontend
-  agent:
-    image: portainer/agent
-    container_name: portainer_agent
-    restart: always 
-    volumes:
-      - /var/lib/docker/volumes:/var/lib/docker/volumes
-      - /var/run/docker.sock:/var/run/docker.sock
-      - agent_data:/data
-    environment:
-      EDGE_KEY: ${EDGE_KEY} 
-      EDGE: ${EDGE}
-      EDGE_ID: ${EDGE_ID} 
+    labels:
+      - "traefik.enable=true"
+      - "traefik.custom.subdomain=docker"
+      - "traefik.http.services.portainer.loadbalancer.server.port=9000"
 
 networks:
   frontend:
@@ -38,5 +26,4 @@ networks:
 volumes:
   data:
     name: portainer_data
-  agent_data:
-    name: portainer_agent_data
+

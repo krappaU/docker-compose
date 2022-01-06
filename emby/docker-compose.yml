@@ -14,10 +14,9 @@ services:
       - /media/hdd3:/hdd3
     networks: 
       - frontend
-    environment:
-      VIRTUAL_HOST: "emby.${EXT_HOST}"
-      VIRTUAL_PORT: "8096"
-      LETSENCRYPT_HOST: "emby.${EXT_HOST}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.emby.loadbalancer.server.port=8096"
     devices:
       - /dev/dri:/dev/dri
 volumes:

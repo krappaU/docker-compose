@@ -9,9 +9,6 @@ services:
       - TZ=Europe/Moscow
       - UMASK_SET=022
       - WEBUI_PORT=8080
-      - LETSENCRYPT_HOST=torrent.${EXT_HOST}
-      - VIRTUAL_HOST=torrent.${EXT_HOST}
-      - VIRTUAL_PORT=8080
     volumes:
       - qbittorrent-config:/config
       - /media/hdd3:/downloads
@@ -21,6 +18,10 @@ services:
       - 6881:6881
       - 6881:6881/udp
     restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.custom.subdomain=torrent"
+      - "traefik.http.services.qbittorrent.loadbalancer.server.port=8080"
     networks:
       - frontend
 networks:
