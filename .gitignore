@@ -3,3 +3,4 @@ common.yml
 fredboat.yml
 minecraft/config.nogit.php
 traefik/traefik.yml
+test/
