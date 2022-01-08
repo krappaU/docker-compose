@@ -13,14 +13,27 @@ services:
       - backend
     volumes:
       - /media/hdd1/minecraft_data:/var/lib/mysql
-  server:
+
+  router:
+    image: itzg/mc-router
+    container_name: minecraft_router
+    environment:
+      # enable API
+      API_BINDING: ":25564"
+    ports:
+      - 25565:25565
+      # bind the API port to only loopback to avoid external exposure
+      - 127.0.0.1:25564:25564
+    command: --mapping=mc1.yurusov.com=server_vlad:25565,mc2.yurusov.com=server_artem:25565
+    networks:
+      - frontend
+
+  server_vlad:
     depends_on:
       - database
-    image: itzg/minecraft-server:latest
-    container_name: minecraft_server
+    image: itzg/minecraft-server
+    container_name: minecraft_vlad
     command: --noconsole
-    ports:
-      - "25566:25565"
     volumes:
       - /srv/minecraft/:/data
     networks:
@@ -32,12 +45,27 @@ services:
       SERVER_NAME: "Home, sweet home"
       TYPE: "PAPER"
       EULA: "TRUE"
-      MEMORY: "4G"
-      ENABLE_RCON: "TRUE"
-      RCON_PASSWORD: "${RCON_PASSWORD}"
-      RCON_PORT: "25575"
+      INIT_MEMORY: "3G"
+      MAX_MEMORY: "6G"
       SPIGET_RESOURCES: "9368"
     restart: always
+
+  server_artem:
+    image: itzg/minecraft-server
+    container_name: minecraft_artem
+    volumes:
+      - "/srv/minecraft_artem_2022/:/data"
+    networks:
+      - frontend
+    environment:
+      VERSION: "LATEST"
+      SERVER_NAME: "Server 228"
+      TYPE: "VANILLA"
+      EULA: "TRUE"
+      INIT_MEMORY: "2G"
+      MAX_MEMORY: "4G"
+    restart: unless-stopped
+
   map:
     depends_on:
       - database
@@ -62,6 +90,7 @@ services:
       - frontend
     labels:
       - "traefik.enable=true"
+      - "traefik.custom.subdomain=skins"
     volumes:
       - ./config.nogit.php:/var/www/html/config.nogit.php
     restart: always
