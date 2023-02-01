@@ -1,0 +1,57 @@
+version: "3.8"
+
+services:
+  miner:
+    image: mrcraftcod/channel-points-miner:latest
+    command: "--settings /usr/src/app/config.json"
+    volumes:
+      - ./authentication:/usr/src/app/authentication
+      - ./streamers:/usr/src/app/streamers
+      - ./config.json:/usr/src/app/config.json:ro
+      - ./log4j2.xml:/usr/src/app/log4j2.xml:ro
+    restart: unless-stopped
+    environment:
+      - JDK_JAVA_OPTIONS="-Dlog4j.configurationFile=/usr/src/app/log4j2.xml"
+    networks:
+      - frontend
+      - default
+
+  selenium:
+    image: selenium/standalone-chrome:latest
+    restart: unless-stopped
+    networks:
+      - default
+
+  web:
+    image: mrcraftcod/channel-points-miner-viewer:latest
+    restart: unless-stopped
+    environment:
+        JDK_JAVA_OPTIONS: "-Dspring.config.location=file:/usr/src/app/application-docker.yml -Dspring.profiles.active=docker"
+    volumes:
+      - ./application-docker.yml:/usr/src/app/application-docker.yml:ro
+    networks:
+      - frontend
+      - default
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.channel-points-miner-web.rule=Host(`$HOSTNAME`) || Host(`twitch-points.$EXT_HOST`)
+
+  db:
+    image: mariadb:10.8
+    restart: unless-stopped
+    volumes:
+      - ./data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=miner
+      - MYSQL_PASSWORD=miner
+      - MYSQL_DATABASE=miner
+      - MYSQL_USER=miner
+    networks:
+      - default
+
+networks:
+  frontend:
+    external: true
+
+
+

@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  redbot:
+    image: phasecorex/red-discordbot
+    restart: unless-stopped
+    volumes:
+      - redbot:/data
+    environment:
+      - TOKEN
+      - PREFIX=!
+      - TZ=Europe/Moscow
+      - PUID=1000
+
+volumes:
+  redbot:
+    name: redbot
+

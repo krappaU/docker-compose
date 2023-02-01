@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+
+  proxy:
+    image: datadog/squid
+    ports:
+      - 25569:3128
+    volumes:
+      - ./squid.conf:/etc/squid/squid.conf
+      - ./passwords:/etc/squid/passwords
+    restart: unless-stopped
+

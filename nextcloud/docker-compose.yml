@@ -1,45 +1,47 @@
-version: "2.4"
+version: "3.8"
 services:
-  nextcloud:
-    image: nextcloud
-    container_name: nextcloud_main
+  app:
+    image: nextcloud:24-fpm
     environment:
       - MYSQL_HOST=db
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=nextcloud
       - MYSQL_USER=nextcloud
+      - MYSQL_PASSWORD
     volumes:
-      - www:/var/www/html
-      - /media/hdd3:/downloads
-      - /media/hdd1:/hdd1
-      - /media/hdd2:/hdd2
-    restart: always
-    labels:
-      - "traefik.enable=true"
+      - /mnt/2tb/Docker/nextcloud/www:/var/www/html
+      - /mnt/2tb/Docker/nextcloud/data:/var/www/html/data
+      - /mnt:/mnt:ro
+    restart: unless-stopped
     networks:
-      - frontend
-      - backend
+      - default
+
   db:
     image: mariadb
-    container_name: nextcloud_db
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
-    restart: always
+    restart: unless-stopped
     volumes:
-      - db:/var/lib/mysql
+      - ./db:/var/lib/mysql
     environment:
-      - MYSQL_ROOT_PASSWORD
-      - MYSQL_PASSWORD
       - MYSQL_DATABASE=nextcloud
       - MYSQL_USER=nextcloud
+      - MYSQL_ROOT_PASSWORD
+      - MYSQL_PASSWORD
     networks:
-      - backend
+      - default
+
+  web:
+    image: nginx
+    restart: unless-stopped
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    volumes_from:
+      - app
+    labels:
+      - traefik.enable=true
+    networks:
+      - frontend
+      - default
+ 
 networks:
   frontend:
     external: true
-  backend:
-    name: nextcloud_backend
-    internal: true
-
-volumes:
-  www:
-  db:

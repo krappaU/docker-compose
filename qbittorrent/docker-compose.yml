@@ -1,8 +1,9 @@
-version: "2.4"
+version: "3.8"
+
 services:
+
   qbittorrent:
     image: linuxserver/qbittorrent
-    container_name: qbittorrent
     environment:
       - PUID=1000
       - PGID=1000
@@ -10,24 +11,27 @@ services:
       - UMASK_SET=022
       - WEBUI_PORT=8080
     volumes:
-      - qbittorrent-config:/config
-      - /media/hdd3:/downloads
-      - /media/hdd1:/hdd1
-      - /media/hdd2:/hdd2
+      - ./config:/config
+      - /mnt:/mnt
     ports:
       - 6881:6881
       - 6881:6881/udp
-    restart: always
+    restart: unless-stopped
     labels:
-      - "traefik.enable=true"
-      - "traefik.custom.subdomain=torrent"
-      - "traefik.http.services.qbittorrent.loadbalancer.server.port=8080"
+      - traefik.enable=true
+      - traefik.http.services.qbittorrent.loadbalancer.server.port=8080
+      - homepage.group=Services
+      - homepage.name=qBittorrent
+      - homepage.icon=qbittorrent.png
+      - homepage.href=https://qbittorrent.$EXT_HOST
+      - homepage.description=Bittorent client
+      - homepage.widget.type=qbittorrent
+      - homepage.widget.url=https://qbittorrent.$EXT_HOST
+      - homepage.widget.username=$USER
+      - homepage.widget.password=$PASSWORD
     networks:
       - frontend
 networks:
   frontend:
     external: true
-volumes:
-  qbittorrent-config:
-    name: qbittorrent
 

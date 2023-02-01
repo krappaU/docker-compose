@@ -4,3 +4,9 @@ fredboat.yml
 minecraft/config.nogit.php
 traefik/traefik.yml
 test/
+*.log
+channel_points_miner/authentication/
+passwords
+
+channel_points_miner/streamers
+channel_points_miner/config.json

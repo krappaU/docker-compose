@@ -1,0 +1,10 @@
+version: "3.8"
+services:
+  chromium:
+    image: overclockedllama/docker-chromium
+    ports:
+      - 5800:5800
+      - 5900:5900
+    volumes:
+      - /mnt/2tb/Docker/chromium:/config:rw
+      - /mnt/500gb/Work:/config/work:rw

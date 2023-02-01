@@ -1,24 +1,31 @@
-version: '2.4'
+version: "3.8"
 
 services:
   emby:
     image: emby/embyserver:latest
-    restart: always 
-    container_name: emby
+    restart: always
     ports:
       - 8096:8096
     volumes:
       - emby:/config
-      - /media/hdd1:/hdd1
-      - /media/hdd2:/hdd2
-      - /media/hdd3:/hdd3
+      - /mnt:/mnt
+    environment:
+      - UID=1000
+      - GID=1000
     networks: 
       - frontend
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.services.emby.loadbalancer.server.port=8096"
-    devices:
-      - /dev/dri:/dev/dri
+      - traefik.enable=true
+      - traefik.http.services.emby.loadbalancer.server.port=8096
+      - homepage.group=Services
+      - homepage.name=Emby
+      - homepage.icon=emby.png
+      - homepage.href=https://emby.$EXT_HOST
+      - homepage.description=Media server
+      - homepage.widget.type=emby
+      - homepage.widget.url=https://emby.$EXT_HOST
+      - homepage.widget.key=$API_KEY
+
 volumes:
   emby:
     name: emby

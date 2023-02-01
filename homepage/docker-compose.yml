@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  socket_proxy:
+    image: tecnativa/docker-socket-proxy
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - CONTAINERS=1
+      - POST=0 
+    networks:
+      - default
+
+  homepage:
+    image: ghcr.io/benphelps/homepage:latest
+    restart: unless-stopped
+    depends_on:
+      - socket_proxy
+    volumes:
+      - ./config:/app/config # Make sure your local config directory exists
+      - /mnt:/mnt:ro
+    networks:
+      - frontend
+      - default
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.homepage.rule=Host(`$EXT_HOST`) || Host(`www.$EXT_HOST`)
+
+
+networks:
+  frontend:
+    external: true
+

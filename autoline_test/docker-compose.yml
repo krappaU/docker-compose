@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+
+  db:
+    restart: unless-stopped
+    image: postgres
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    volumes: 
+      - ./db:/var/lib/postgresql/data
+    networks:
+      - default
+
+  app:
+    restart: unless-stopped
+    image: harbor.yurusov.com/library/autoline-trade:${TAG:-development}
+    tmpfs: /tmp
+    command: ['/home/app/docker/start_app.sh']
+    volumes:
+      - ./uploads:/home/app/storage/uploads
+    environment:
+      - RAILS_ENV=production
+      - NODE_ENV=production
+      - DATABASE_NAME=autoline-trade
+      - DATABASE_HOST=db
+      - RAILS_SERVE_STATIC_FILES=true
+      - RAILS_LOG_TO_STDOUT=true
+      - RAILS_MASTER_KEY
+    networks:
+      - frontend
+      - default
+    labels:
+      - traefik.enable=true
+      - traefik.custom.subdomain=al-test1
+  
+networks:
+  frontend:
+    external: true
+

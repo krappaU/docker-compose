@@ -1,23 +1,22 @@
-version: "3.0"
+version: "3.8"
 
 services:
   project-zomboid:
     image: ghcr.io/cyrale/project-zomboid
     restart: unless-stopped
-    container_name: "project_zomboid"
     environment:
-      SERVER_NAME: "pzserver"
-      SERVER_PUBLIC_NAME: "[RU/EU] Pure vanila"
-      SERVER_PUBLIC_DESC: "Pure vanila server based in Russia"
-      ADMIN_PASSWORD: "${PASSWORD}"
-      PLAYER_PORTS: "16262-16362"
-      RCON_PASSWORD: "${PASSWORD}"
+      - SERVER_NAME=pzserver
+      - PLAYER_PORTS=16262-16362
+      - SERVER_PUBLIC_NAME
+      - SERVER_PUBLIC_DESC
+      - ADMIN_PASSWORD
+      - RCON_PASSWORD
     ports:
-      - "8766:8766/udp"
-      - "8767:8767/udp"
-      - "16261:16261/udp"
-      - "16262-16362:16262-16362"
-      - "27015:27015"
+      - 8766:8766/udp
+      - 8767:8767/udp
+      - 16261:16261/udp
+      - 16262-16362:16262-16362
+      - 27015:27015
     volumes:
       - /srv/project_zomboid:/server-data
 

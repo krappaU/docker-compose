@@ -1,14 +1,13 @@
-version: '2.4'
+version: "3.8"
 
 services:
   etesync:
     image: victorrds/etesync
-    restart: always 
-    container_name: etesync
+    restart: unless-stopped 
     labels:
-      - "traefik.enable=true"
-      - "traefik.custom.subdomain=sync"
-      - "traefik.http.services.etesync.loadbalancer.server.port=3735"
+      - traefik.enable=true
+      - traefik.custom.subdomain=sync
+      - traefik.http.services.etesync.loadbalancer.server.port=3735
     volumes:
       - data:/data
     networks: 

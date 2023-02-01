@@ -1,104 +1,132 @@
-version: "2.4"
+version: "3.8"
 
 services:
   database:
     image: mariadb
-    container_name: minecraft_database
     hostname: database
     command: --max_allowed_packet=32505856
-    restart: always
+    restart: unless-stopped
     environment:
       - MYSQL_ROOT_PASSWORD
     networks:
-      - backend
+      - default
     volumes:
-      - /media/hdd1/minecraft_data:/var/lib/mysql
+      - /mnt/2tb/Docker/minecraft_database:/var/lib/mysql
 
   router:
     image: itzg/mc-router
-    container_name: minecraft_router
+    restart: unless-stopped
     environment:
       # enable API
-      API_BINDING: ":25564"
+      - API_BINDING=:25564
     ports:
       - 25565:25565
       # bind the API port to only loopback to avoid external exposure
       - 127.0.0.1:25564:25564
-    command: --mapping=mc1.yurusov.com=server_vlad:25565,mc2.yurusov.com=server_artem:25565
+    command: --mapping=$MINECRAFT_HOST_MAPPING
     networks:
       - frontend
+      - default
 
-  server_vlad:
+  vlad:
     depends_on:
       - database
     image: itzg/minecraft-server
-    container_name: minecraft_vlad
+    restart: unless-stopped
     command: --noconsole
     volumes:
       - /srv/minecraft/:/data
+      - /mnt/2tb/Docker/minecraft_backups:/data/plugins/eBackup/backups/
     networks:
-      - backend
-      - frontend
+      - default
     environment:
-      VERSION: "LATEST"
-      CONSOLE: "FALSE"
-      SERVER_NAME: "Home, sweet home"
-      TYPE: "PAPER"
-      EULA: "TRUE"
-      INIT_MEMORY: "3G"
-      MAX_MEMORY: "6G"
-      SPIGET_RESOURCES: "9368"
-    restart: always
+      - VERSION=1.19.2
+      - CONSOLE=FALSE
+      - SERVER_NAME=Home, sweet home
+      - TYPE=PAPER
+      - EULA=TRUE
+      - INIT_MEMORY=3G
+      - MAX_MEMORY=6G
+      - SPIGET_RESOURCES=9368
 
-  server_artem:
+  artem:
     image: itzg/minecraft-server
-    container_name: minecraft_artem
+    restart: unless-stopped
     volumes:
-      - "/srv/minecraft_artem_2022/:/data"
+      - /srv/minecraft_artem_2022/:/data
+    networks:
+      - default
+    environment:
+      - VERSION=LATEST
+      - SERVER_NAME=Server 228
+      - TYPE=VANILLA
+      - EULA=TRUE
+      - INIT_MEMORY=2G
+      - MAX_MEMORY=4G
+
+  artem_modded:
+    image: itzg/minecraft-server:java8-multiarch
+    restart: unless-stopped
+    volumes:
+      - /srv/minecraft_artem_modded/:/data
+    networks:
+      - default
+    environment:
+      - VERSION=1.12.2
+      - SERVER_NAME=Server FTB Ultimate
+      - TYPE=FORGE
+      - FTB_MODPACK_ID-36
+      - FTB_MODPACK_VERSION_ID=147
+      - EULA=TRUE
+      - INIT_MEMORY=2G
+      - MAX_MEMORY=4G
+      - UID=1002
+      - GID=1002
+
+  bedrock:
+    image: itzg/minecraft-bedrock-server
+    restart: unless-stopped
+    volumes:
+      - /srv/minecraft_bedrock/:/data
     networks:
       - frontend
+    ports:
+      - 19132:19132/udp
     environment:
-      VERSION: "LATEST"
-      SERVER_NAME: "Server 228"
-      TYPE: "VANILLA"
-      EULA: "TRUE"
-      INIT_MEMORY: "2G"
-      MAX_MEMORY: "4G"
-    restart: unless-stopped
-
+      - VERSION=LATEST
+      - EULA=TRUE
+      - SERVER_NAME=Server for your mom
+      - DIFFICULTY=hard
+      - ONLINE_MODE=true
+ 
   map:
     depends_on:
       - database
     image: richarvey/nginx-php-fpm:1.10.3
-    container_name: minecraft_map
+    restart: unless-stopped
     networks:
-      - backend
+      - default
       - frontend
     volumes:
       - /srv/minecraft/plugins/dynmap/web:/var/www/html/
-    restart: always
     labels:
-      - "traefik.enable=true"
-      - "traefik.custom.subdomain=map"
+      - traefik.enable=true
+      - traefik.custom.subdomain=map
   skins:
     depends_on:
       - database
-    container_name: minecraft_skins
+    restart: unless-stopped
     build: skins/.
     networks:
-      - backend
+      - default
       - frontend
     labels:
-      - "traefik.enable=true"
-      - "traefik.custom.subdomain=skins"
+      - traefik.enable=true
+      - traefik.custom.subdomain=skins
     volumes:
       - ./config.nogit.php:/var/www/html/config.nogit.php
-    restart: always
 
 networks:
-  backend:
-    name: minecraft_backend
-    internal: true
   frontend:
     external: true
 

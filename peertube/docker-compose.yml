@@ -1,0 +1,52 @@
+version: "3.8"
+
+services:
+
+  peertube:
+    image: chocobozzz/peertube:production-bullseye
+    networks:
+      - frontend
+      - default
+    env_file:
+      - .env
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.peertube.rule=Host(`$PEERTUBE_WEBSERVER_HOSTNAME`)
+      - traefik.http.services.peertube.loadbalancer.server.port=9000
+
+    volumes:
+      - /mnt/2tb/Docker/peertube/assets:/app/client/dist
+      - /mnt/2tb/Docker/peertube/data:/data
+      - /mnt/2tb/Docker/peertube/config:/config
+    depends_on:
+      - postgres
+      - redis
+      - postfix
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:13-alpine
+    env_file:
+      - .env
+    volumes:
+      - /mnt/2tb/Docker/peertube/db:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  redis:
+    image: redis:6-alpine
+    volumes:
+      - /mnt/2tb/Docker/peertube/redis:/data
+    restart: unless-stopped
+
+  postfix:
+    image: mwader/postfix-relay
+    env_file:
+      - .env
+    volumes:
+      - /mnt/2tb/Docker/peertube/opendkim/keys:/etc/opendkim/keys
+    restart: unless-stopped
+
+networks:
+  frontend:
+    external: true
+

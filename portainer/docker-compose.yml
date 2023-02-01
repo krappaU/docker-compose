@@ -1,29 +1,34 @@
-version: "2.4"
+version: "3.8"
 
 services:
   
   portainer:
     image: portainer/portainer-ce
-    container_name: portainer
     restart: unless-stopped
     ports:
       - 8000:8000
       - 9000:9000
     volumes:
-      - data:/data
+      - /mnt/2tb/Docker/portainer/data:/data
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - frontend
     labels:
-      - "traefik.enable=true"
-      - "traefik.custom.subdomain=docker"
-      - "traefik.http.services.portainer.loadbalancer.server.port=9000"
+      - traefik.enable=true
+      - traefik.custom.subdomain=docker
+      - traefik.http.services.portainer.loadbalancer.server.port=9000
+      - homepage.group=System
+      - homepage.name=Portainer
+      - homepage.icon=portainer.png
+      - homepage.href=https://docker.$EXT_HOST
+      - homepage.description=Conatiner managment
+      - homepage.widget.type=portainer
+      - homepage.widget.env=1
+      - homepage.widget.url=https://docker.$EXT_HOST
+      - homepage.widget.key=$API_KEY
 
 networks:
   frontend:
     external: true
 
-volumes:
-  data:
-    name: portainer_data
 

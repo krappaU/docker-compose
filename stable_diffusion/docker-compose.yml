@@ -1,0 +1,77 @@
+version: "3.9"
+
+x-base_service: &base_service
+    ports:
+      - 7860:7860
+    restart: unless-stopped
+    volumes:
+      - &v1 ./data:/data
+      - &v2 ./output:/output
+      - &v3 /mnt/2tb/Docker/stable_diffusion/data/StableDiffusion:/data/StableDiffusion
+    deploy:
+      resources:
+        reservations:
+          devices:
+              - driver: nvidia
+                device_ids: ['0']
+                capabilities: [gpu]
+
+name: stable_diffussion_webui
+
+services:
+  download:
+    build: ./services/download/
+    profiles: ["download"]
+    volumes:
+      - *v1
+      - *v3
+
+  auto: &automatic
+    <<: *base_service
+    profiles: ["auto"]
+    build: ./services/AUTOMATIC1111
+    networks:
+      - frontend
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.auto-stable-diffussion-webui.rule=Host(`$HOSTNAME`) || Host(`sd.$EXT_HOST`)
+      - traefik.http.routers.auto-stable-diffussion-webui.middlewares=basic-auth
+    image: sd-auto:28
+    environment:
+      - CLI_ARGS=--allow-code --medvram --xformers --enable-insecure-extension-access --api
+
+  auto-cpu:
+    <<: *automatic
+    profiles: ["auto-cpu"]
+    deploy: {}
+    environment:
+      - CLI_ARGS=--no-half --precision full
+
+  sygil: &sygil
+    <<: *base_service
+    profiles: ["sygil"]
+    build: ./services/sygil/
+    image: sd-sygil:15
+    environment:
+      - CLI_ARGS=--optimized-turbo
+      - USE_STREAMLIT=0
+
+  sygil-sl:
+    <<: *sygil
+    profiles: ["sygil-sl"]
+    environment:
+      - USE_STREAMLIT=1
+
+
+  invoke:
+    <<: *base_service
+    profiles: ["invoke"]
+    build: ./services/invoke/
+    image: sd-invoke:16
+    environment:
+      - PRELOAD=true
+      - CLI_ARGS=
+
+networks:
+  frontend:
+    external: true

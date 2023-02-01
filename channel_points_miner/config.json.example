@@ -1,0 +1,43 @@
+{
+  "accounts": [
+    {
+      "username": "USERNAME",
+        "loginMethod": {
+        "type": "browser",
+        "driver": "REMOTE_CHROME",
+        "remoteHost": "channel_point_miner_selenium",
+        "cookiesPath": "/usr/src/app/authentication"
+      },
+      "loadFollows": true,
+      "defaultStreamerSettings": {
+        "joinIrc": false,
+        "followRaid": true,
+        "participateCampaigns": true,
+        "priorities": [
+          {
+            "type":"drops",
+            "score":"30"
+          },
+          {
+            "type": "subscribed",
+            "score":"10",
+            "score2":"20",
+            "score3":"30"
+          },
+          {
+            "type": "watchStreak",
+            "score": "30"
+          }
+        ]
+      },
+      "analytics": {
+        "enabled": true,
+        "database": {
+          "jdbcUrl": "jdbc:mariadb://db:3306/miner",
+          "username": "miner",
+          "password": "miner"
+        }
+      }
+    }
+  ]
+}

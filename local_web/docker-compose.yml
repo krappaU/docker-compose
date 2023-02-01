@@ -1,17 +1,17 @@
-version: '2.4'
+version: "3.8"
 
 services:
   local:
     image: nginx:alpine
     restart: unless-stopped 
-    container_name: local_web
     volumes:
       - /home/litt/local_web:/usr/share/nginx/html:ro
     networks: 
       - frontend
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.local.rule=Host(`192.168.0.150`)"
+      - traefik.enable=true
+      - traefik.http.routers.local.rule=Host(`192.168.0.150`)
+      - traefik.http.routers.local.tls=false
 
 networks:
   frontend:

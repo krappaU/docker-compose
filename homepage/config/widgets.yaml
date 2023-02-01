@@ -1,0 +1,25 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/en/configs/widgets
+
+- resources:
+    cpu: true
+    memory: true
+    expanded: true
+    disk:
+        - /
+        - /mnt/2tb
+        - /mnt/1tb
+        - /mnt/500gb
+
+- search:
+    provider: duckduckgo
+    target: _blank
+
+- datetime:
+    text_size: xl
+    locale: de
+    format:
+      timeStyle: medium
+      dateStyle: short
+      hour12: false

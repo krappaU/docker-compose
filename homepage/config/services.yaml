@@ -1,0 +1,31 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/en/configs/services
+
+# - My First Group:
+#     - My First Service:
+#         href: http://localhost/
+#         description: Homepage is awesome
+
+# - My Second Group:
+#     - My Second Service:
+#         href: http://localhost/
+#         description: Homepage is the best
+
+# - My Third Group:
+#     - My Third Service:
+#         href: http://localhost/
+#         description: Homepage is 😎
+
+
+- System:
+  - Mikrotik:
+      icon: mikrotik.png
+      description: Router
+      widget:
+        type: mikrotik
+        url: https://192.168.0.1
+        username: homepage
+        password: readonly
+
+
