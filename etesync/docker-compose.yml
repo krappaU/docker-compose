@@ -9,12 +9,9 @@ services:
       - traefik.custom.subdomain=sync
       - traefik.http.services.etesync.loadbalancer.server.port=3735
     volumes:
-      - data:/data
+      - ./data:/data
     networks: 
       - frontend
-volumes:
-  data:
-    name: etesync
 
 networks:
   frontend:

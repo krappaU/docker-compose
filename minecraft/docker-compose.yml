@@ -73,7 +73,7 @@ services:
       - default
     environment:
       - VERSION=1.12.2
-      - SERVER_NAME=Server FTB Ultimate
+      - SERVER_NAME=Industrial craft
       - TYPE=FORGE
       - FTB_MODPACK_ID-36
       - FTB_MODPACK_VERSION_ID=147

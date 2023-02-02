@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   app:
-    image: nextcloud:24-fpm
+    image: nextcloud:25-fpm
     environment:
       - MYSQL_HOST=db
       - MYSQL_DATABASE=nextcloud
@@ -20,7 +20,7 @@ services:
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
     restart: unless-stopped
     volumes:
-      - ./db:/var/lib/mysql
+      - /mnt/2tb/Docker/nextcloud/db:/var/lib/mysql
     environment:
       - MYSQL_DATABASE=nextcloud
       - MYSQL_USER=nextcloud

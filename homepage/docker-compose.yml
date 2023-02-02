@@ -18,7 +18,7 @@ services:
     depends_on:
       - socket_proxy
     volumes:
-      - ./config:/app/config # Make sure your local config directory exists
+      - ./config:/app/config
       - /mnt:/mnt:ro
     networks:
       - frontend

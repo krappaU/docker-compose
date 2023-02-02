@@ -29,17 +29,17 @@ services:
       - frontend
       - socket_proxy
     labels:
-      - traefik.enable: true
-      - traefik.http.middlewares.basic-auth.basicauth.users: $USERS
-      - traefik.http.routers.traefik.service: api@internal
-      - traefik.http.routers.traefik.middlewares: basic-auth
-      - homepage.group: System
-      - homepage.name: Traefik
-      - homepage.href: https://traefik.$EXT_HOST
-      - homepage.icon: traefik.png
-      - homepage.description: Reverse proxy
-      - homepage.widget.type: traefik
-      - homepage.widget.url: http://traefik:8080
+      - traefik.enable=true
+      - traefik.http.middlewares.basic-auth.basicauth.users=$USERS
+      - traefik.http.routers.traefik.service=api@internal
+      - traefik.http.routers.traefik.middlewares=basic-auth
+      - homepage.group=System
+      - homepage.name=Traefik
+      - homepage.href=https://traefik.$EXT_HOST
+      - homepage.icon=traefik.png
+      - homepage.description=Reverse proxy
+      - homepage.widget.type=traefik
+      - homepage.widget.url=http://traefik:8080
 
 networks:
   frontend:
