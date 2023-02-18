@@ -5,9 +5,8 @@ x-base_service: &base_service
       - 7860:7860
     restart: unless-stopped
     volumes:
-      - &v1 ./data:/data
-      - &v2 ./output:/output
-      - &v3 /mnt/2tb/Docker/stable_diffusion/data/StableDiffusion:/data/StableDiffusion
+      - &v1 /mnt/2tb/Docker/stable_diffusion/data:/data
+      - &v2 /mnt/2tb/Docker/stable_diffusion/output:/output
     deploy:
       resources:
         reservations:
@@ -24,7 +23,6 @@ services:
     profiles: ["download"]
     volumes:
       - *v1
-      - *v3
 
   auto: &automatic
     <<: *base_service

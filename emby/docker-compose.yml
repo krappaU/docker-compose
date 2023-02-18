@@ -7,7 +7,7 @@ services:
     ports:
       - 8096:8096
     volumes:
-      - ./data:/config
+      - /mnt/2tb/Docker/emby/data:/config
       - /mnt:/mnt:ro
     environment:
       - UID=1000
