@@ -13,6 +13,9 @@ fredboat.yml
 traefik.yml
 config.nogit.php
 
+db/
+database/
+
 channel_points_miner/authentication/
 channel_points_miner/streamers
 channel_points_miner/config.json
