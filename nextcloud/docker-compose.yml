@@ -38,6 +38,14 @@ services:
       - app
     labels:
       - traefik.enable=true
+      - homepage.group=Services
+      - homepage.name=Nextcloud
+      - homepage.icon=nextcloud.png
+      - homepage.href=https://nextcloud.$EXT_HOST
+      - homepage.widget.type=nextcloud
+      - homepage.widget.url=https://nextcloud.$EXT_HOST
+      - homepage.widget.username=$HOMEPAGE_USER
+      - homepage.widget.password=$HOMEPAGE_PASSWORD
     networks:
       - frontend
       - default

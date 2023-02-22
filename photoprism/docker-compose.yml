@@ -58,12 +58,21 @@ services:
         reservations:
           devices:
             - driver: nvidia
-              count: 1
+              device_ids: ['0']
               capabilities: [gpu]
     labels:
       - traefik.enable=true
       - traefik.custom.subdomain=photos
       - traefik.http.services.photoprism.loadbalancer.server.port=2342
+      - homepage.group=Services
+      - homepage.name=PhotoPrism
+      - homepage.icon=photoprism.png
+      - homepage.href=https://photos.$EXT_HOST
+      - homepage.description=AI-powered photo gallery
+      - homepage.widget.type=photoprism
+      - homepage.widget.url=https://photos.$EXT_HOST
+      - homepage.widget.username=$HOMEPAGE_USER
+      - homepage.widget.password=$HOMEPAGE_PASSWORD
     volumes:
       - /mnt/2tb/Pictures/Photo:/photoprism/originals
       - /mnt/2tb/Docker/photoprism/storage:/photoprism/storage 

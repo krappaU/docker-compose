@@ -14,8 +14,8 @@ services:
       - /mnt/2tb/Docker/qbittorrent/data:/config
       - /mnt:/mnt
     ports:
-      - 6881:6881
-      - 6881:6881/udp
+      - 43623:43623
+      - 43623:43623/udp
     restart: unless-stopped
     labels:
       - traefik.enable=true

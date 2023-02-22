@@ -3,7 +3,7 @@ version: "3.8"
 services:
 
   proxy:
-    image: datadog/squid
+    image: sameersbn/squid
     ports:
       - 25569:3128
     volumes:
