@@ -16,7 +16,6 @@ services:
     restart: unless-stopped
     image: harbor.yurusov.com/library/autoline-trade:${TAG:-development}
     tmpfs: /tmp
-    command: ['/home/app/docker/start_app.sh']
     volumes:
       - ./uploads:/home/app/storage/uploads
     environment:

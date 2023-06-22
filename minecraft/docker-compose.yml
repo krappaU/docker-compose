@@ -64,7 +64,7 @@ services:
       - INIT_MEMORY=2G
       - MAX_MEMORY=4G
 
-  artem_modded:
+  artemmodded:
     image: itzg/minecraft-server:java8-multiarch
     restart: unless-stopped
     volumes:
