@@ -53,7 +53,7 @@ services:
     image: itzg/minecraft-server
     restart: unless-stopped
     volumes:
-      - /srv/minecraft_artem_2022/:/data
+      - /srv/minecraft_artem/:/data
     networks:
       - default
     environment:

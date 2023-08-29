@@ -3,10 +3,8 @@
     {
       "username": "USERNAME",
         "loginMethod": {
-        "type": "browser",
-        "driver": "REMOTE_CHROME",
-        "remoteHost": "channel_point_miner_selenium",
-        "cookiesPath": "/usr/src/app/authentication"
+        "type": "tv",
+        "authenticationFolder": "/usr/src/app/authentication/tv"
       },
       "loadFollows": true,
       "defaultStreamerSettings": {

@@ -16,12 +16,6 @@ services:
       - frontend
       - default
 
-  selenium:
-    image: selenium/standalone-chrome:latest
-    restart: unless-stopped
-    networks:
-      - default
-
   web:
     image: mrcraftcod/channel-points-miner-viewer:latest
     restart: unless-stopped
