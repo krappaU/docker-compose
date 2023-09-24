@@ -10,4 +10,9 @@ services:
       - ./squid.conf:/etc/squid/squid.conf
       - ./passwords:/etc/squid/passwords
     restart: unless-stopped
+    labels:
+      - homepage.group=System
+      - homepage.icon=si-octopusdeploy-#34A7C1
+      - homepage.name=Squid
+      - homepage.description=Caching proxy
 

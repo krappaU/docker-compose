@@ -234,6 +234,11 @@ services:
       - traefik.enable=true
       - traefik.custom.subdomain=harbor
       - traefik.http.services.harbor.loadbalancer.server.port=8080
+      - homepage.group=Services
+      - homepage.icon=harbor.png
+      - homepage.name=Harbor
+      - homepage.description=Docker image repository
+      - homepage.href=https://harbor.$EXT_HOST
     depends_on:
       - registry
       - core

@@ -35,6 +35,11 @@ services:
       - traefik.enable=true
       - traefik.http.routers.auto-stable-diffussion-webui.rule=Host(`$HOSTNAME`) || Host(`sd.$EXT_HOST`)
       - traefik.http.routers.auto-stable-diffussion-webui.middlewares=basic-auth
+      - homepage.group=Services
+      - homepage.icon=mdi-palette
+      - homepage.name=Stable diffusiion
+      - homepage.description=Web UI
+      - homepage.href=https://sd.$EXT_HOST
     image: sd-auto:67
     environment:
       - CLI_ARGS=--allow-code --medvram --xformers --enable-insecure-extension-access --api

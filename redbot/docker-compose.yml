@@ -10,4 +10,9 @@ services:
       - PREFIX=!
       - TZ=Europe/Moscow
       - PUID=1000
+    labels:
+      - homepage.group=Services
+      - homepage.icon=mdi-robot-#990F02
+      - homepage.name=Redbot
+      - homepage.description=Discord bot
 

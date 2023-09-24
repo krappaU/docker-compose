@@ -13,8 +13,13 @@ services:
     environment:
       - JDK_JAVA_OPTIONS="-Dlog4j.configurationFile=/usr/src/app/log4j2.xml"
     networks:
-      - frontend
       - default
+    labels:
+      - homepage.group=Services
+      - homepage.icon=mdi-pickaxe
+      - homepage.name=Points miner
+      - homepage.description=Twitch points
+      - homepage.href=https://twitch-points.$EXT_HOST
 
   web:
     image: mrcraftcod/channel-points-miner-viewer:latest
