@@ -35,7 +35,7 @@ services:
       - traefik.enable=true
       - traefik.http.routers.auto-stable-diffussion-webui.rule=Host(`$HOSTNAME`) || Host(`sd.$EXT_HOST`)
       - traefik.http.routers.auto-stable-diffussion-webui.middlewares=basic-auth
-    image: sd-auto:58
+    image: sd-auto:67
     environment:
       - CLI_ARGS=--allow-code --medvram --xformers --enable-insecure-extension-access --api
 
