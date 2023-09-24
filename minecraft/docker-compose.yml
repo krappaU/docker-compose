@@ -5,20 +5,9 @@ x-base_service: &base_service
     networks:
       - default
 
-x-homepage_widget: &widget
-  - homepage.group=Services
-  - homepage.icon=minecraft.png
-  - homepage.name=Minecraft
-  - homepage.widget.type=minecraft
-
 x-base_server: &base_server
     <<: *base_service
     image: itzg/minecraft-server
-    environment:
-      - EULA=TRUE
-    labels:
-      <<: *widget
-
 
 services:
   database:
@@ -56,6 +45,7 @@ services:
       - /mnt/2tb/Docker/minecraft_backups:/data/plugins/eBackup/backups/
     environment:
       - VERSION=1.19.2
+      - EULA=TRUE
       - CONSOLE=FALSE
       - SERVER_NAME=Home, sweet home
       - TYPE=PAPER
@@ -63,6 +53,10 @@ services:
       - MAX_MEMORY=6G
       - SPIGET_RESOURCES=9368
     labels:
+      - homepage.group=Services
+      - homepage.icon=minecraft.png
+      - homepage.name=Minecraft
+      - homepage.widget.type=minecraft
       - homepage.description=Vlad's minecraft server
       - homepage.url=udp://mc1.$MINECRAFT_HOST:25565
 
@@ -80,6 +74,10 @@ services:
       - INIT_MEMORY=2G
       - MAX_MEMORY=4G
     labels:
+      - homepage.group=Services
+      - homepage.icon=minecraft.png
+      - homepage.name=Minecraft
+      - homepage.widget.type=minecraft
       - homepage.description=Artem's minecraft server
       - homepage.widget.url=udp://mc2.$MINECRAFT_HOST:25565
 
@@ -94,11 +92,16 @@ services:
       - TYPE=FORGE
       - FTB_MODPACK_ID-36
       - FTB_MODPACK_VERSION_ID=147
+      - EULA=TRUE
       - INIT_MEMORY=2G
       - MAX_MEMORY=4G
       - UID=1002
       - GID=1002
     labels:
+      - homepage.group=Services
+      - homepage.icon=minecraft.png
+      - homepage.name=Minecraft
+      - homepage.widget.type=minecraft
       - homepage.description=Artems's modded minecraft server
       - homepage.url=udp://mc3.$MINECRAFT_HOST:25565
 
@@ -116,6 +119,14 @@ services:
       - SERVER_NAME=Server for your mom
       - DIFFICULTY=hard
       - ONLINE_MODE=true
+      - EULA=TRUE
+    labels:
+      - homepage.group=Services
+      - homepage.icon=minecraft.png
+      - homepage.name=Minecraft
+      - homepage.widget.type=minecraft
+      - homepage.description=Bedrock minecraft server
+      - homepage.url=udp://mc1.$MINECRAFT_HOST:19132
 
   map:
     <<: *base_service
