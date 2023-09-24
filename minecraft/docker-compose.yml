@@ -5,16 +5,20 @@ x-base_service: &base_service
     networks:
       - default
 
+x-homepage_widget: &widget
+  - homepage.group=Services
+  - homepage.icon=minecraft.png
+  - homepage.name=Minecraft
+  - homepage.widget.type=minecraft
+
 x-base_server: &base_server
     <<: *base_service
     image: itzg/minecraft-server
     environment:
       - EULA=TRUE
     labels:
-      - homepage.group=Services
-      - homepage.icon=minecraft.png
-      - homepage.name=Minecraft
-      - homepage.widget.type=minecraft
+      <<: *widget
+
 
 services:
   database:
