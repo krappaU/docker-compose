@@ -30,7 +30,7 @@ services:
       - 25565:25565
       # bind the API port to only loopback to avoid external exposure
       - 127.0.0.1:25564:25564
-    command: --mapping="mc1.$MINECRAFT_HOST=vlad:25565,mc2.$MINECRAFT_HOST=artem:25565,mc3.$MINECRAFT_HOST=artem_modded:25565"
+    command: --mapping="mc1.$MINECRAFT_HOST=vlad:25565,mc2.$MINECRAFT_HOST=artem:25565,mc3.$MINECRAFT_HOST=artemmodded:25565"
     networks:
       - frontend
       - default
@@ -53,12 +53,12 @@ services:
       - MAX_MEMORY=6G
       - SPIGET_RESOURCES=9368
     labels:
-      - homepage.group=Services
+      - homepage.group=Games
       - homepage.icon=minecraft.png
-      - homepage.name=Minecraft
+      - homepage.name=Minecraft Vlad
       - homepage.widget.type=minecraft
       - homepage.description=Vlad's minecraft server
-      - homepage.url=udp://mc1.$MINECRAFT_HOST:25565
+      - homepage.widget.url=udp://mc1.$MINECRAFT_HOST:25565
 
   artem:
     <<: *base_server
@@ -74,9 +74,9 @@ services:
       - INIT_MEMORY=2G
       - MAX_MEMORY=4G
     labels:
-      - homepage.group=Services
+      - homepage.group=Games
       - homepage.icon=minecraft.png
-      - homepage.name=Minecraft
+      - homepage.name=Minecraft Artem
       - homepage.widget.type=minecraft
       - homepage.description=Artem's minecraft server
       - homepage.widget.url=udp://mc2.$MINECRAFT_HOST:25565
@@ -98,12 +98,12 @@ services:
       - UID=1002
       - GID=1002
     labels:
-      - homepage.group=Services
+      - homepage.group=Games
       - homepage.icon=minecraft.png
-      - homepage.name=Minecraft
+      - homepage.name=Minecraft Artem Modded
       - homepage.widget.type=minecraft
       - homepage.description=Artems's modded minecraft server
-      - homepage.url=udp://mc3.$MINECRAFT_HOST:25565
+      - homepage.widget.url=udp://mc3.$MINECRAFT_HOST:25565
 
   bedrock:
     <<: *base_server
@@ -121,12 +121,10 @@ services:
       - ONLINE_MODE=true
       - EULA=TRUE
     labels:
-      - homepage.group=Services
+      - homepage.group=Games
       - homepage.icon=minecraft.png
-      - homepage.name=Minecraft
-      - homepage.widget.type=minecraft
-      - homepage.description=Bedrock minecraft server
-      - homepage.url=udp://mc1.$MINECRAFT_HOST:19132
+      - homepage.name=Minecraft Bedrock
+      - homepage.description=Vlad's minecraft server
 
   map:
     <<: *base_service
