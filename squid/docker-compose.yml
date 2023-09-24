@@ -15,4 +15,5 @@ services:
       - homepage.icon=si-octopusdeploy-#34A7C1
       - homepage.name=Squid
       - homepage.description=Caching proxy
+      - homepage.showStats=true
 
