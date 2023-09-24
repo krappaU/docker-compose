@@ -1,21 +1,35 @@
 version: "3.8"
 
+x-base_service: &base_service
+    restart: unless-stopped
+    networks:
+      - default
+
+x-base_server: &base_server
+    <<: *base_service
+    image: itzg/minecraft-server
+    environment:
+      - EULA=TRUE
+    labels:
+      - homepage.group=Services
+      - homepage.icon=minecraft.png
+      - homepage.name=Minecraft
+      - homepage.widget.type=minecraft
+
 services:
   database:
+    <<: *base_service
     image: mariadb
     hostname: database
     command: --max_allowed_packet=32505856
-    restart: unless-stopped
     environment:
       - MYSQL_ROOT_PASSWORD
-    networks:
-      - default
     volumes:
       - /mnt/2tb/Docker/minecraft_database:/var/lib/mysql
 
   router:
+    <<: *base_service
     image: itzg/mc-router
-    restart: unless-stopped
     environment:
       # enable API
       - API_BINDING=:25564
@@ -23,7 +37,7 @@ services:
       - 25565:25565
       # bind the API port to only loopback to avoid external exposure
       - 127.0.0.1:25564:25564
-    command: --mapping=$MINECRAFT_HOST_MAPPING
+    command: --mapping="mc1.$MINECRAFT_HOST=vlad:25565,mc2.$MINECRAFT_HOST=artem:25565,mc3.$MINECRAFT_HOST=artem_modded:25565"
     networks:
       - frontend
       - default
@@ -31,27 +45,25 @@ services:
   vlad:
     depends_on:
       - database
-    image: itzg/minecraft-server
-    restart: unless-stopped
+    <<: *base_server
     command: --noconsole
     volumes:
       - /srv/minecraft/:/data
       - /mnt/2tb/Docker/minecraft_backups:/data/plugins/eBackup/backups/
-    networks:
-      - default
     environment:
       - VERSION=1.19.2
       - CONSOLE=FALSE
       - SERVER_NAME=Home, sweet home
       - TYPE=PAPER
-      - EULA=TRUE
       - INIT_MEMORY=3G
       - MAX_MEMORY=6G
       - SPIGET_RESOURCES=9368
+    labels:
+      - homepage.description=Vlad's minecraft server
+      - homepage.url=udp://mc1.$MINECRAFT_HOST:25565
 
   artem:
-    image: itzg/minecraft-server
-    restart: unless-stopped
+    <<: *base_server
     volumes:
       - /srv/minecraft_artem/:/data
     networks:
@@ -63,29 +75,32 @@ services:
       - EULA=TRUE
       - INIT_MEMORY=2G
       - MAX_MEMORY=4G
+    labels:
+      - homepage.description=Artem's minecraft server
+      - homepage.url=udp://mc2.$MINECRAFT_HOST:25565
 
   artemmodded:
+    <<: *base_server
     image: itzg/minecraft-server:java8-multiarch
-    restart: unless-stopped
     volumes:
       - /srv/minecraft_artem_modded/:/data
-    networks:
-      - default
     environment:
       - VERSION=1.12.2
       - SERVER_NAME=Industrial craft
       - TYPE=FORGE
       - FTB_MODPACK_ID-36
       - FTB_MODPACK_VERSION_ID=147
-      - EULA=TRUE
       - INIT_MEMORY=2G
       - MAX_MEMORY=4G
       - UID=1002
       - GID=1002
+    labels:
+      - homepage.description=Artems's modded minecraft server
+      - homepage.url=udp://mc3.$MINECRAFT_HOST:25565
 
   bedrock:
+    <<: *base_server
     image: itzg/minecraft-bedrock-server
-    restart: unless-stopped
     volumes:
       - /srv/minecraft_bedrock/:/data
     networks:
@@ -94,16 +109,15 @@ services:
       - 19132:19132/udp
     environment:
       - VERSION=LATEST
-      - EULA=TRUE
       - SERVER_NAME=Server for your mom
       - DIFFICULTY=hard
       - ONLINE_MODE=true
- 
+
   map:
+    <<: *base_service
     depends_on:
       - database
     image: richarvey/nginx-php-fpm:1.10.3
-    restart: unless-stopped
     networks:
       - default
       - frontend
@@ -113,9 +127,9 @@ services:
       - traefik.enable=true
       - traefik.custom.subdomain=map
   skins:
+    <<: *base_service
     depends_on:
       - database
-    restart: unless-stopped
     build: skins/.
     networks:
       - default
