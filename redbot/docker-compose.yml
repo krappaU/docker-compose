@@ -15,4 +15,6 @@ services:
       - homepage.icon=mdi-robot-#990F02
       - homepage.name=Redbot
       - homepage.description=Discord bot
+      - homepage.showStats=true
+
 

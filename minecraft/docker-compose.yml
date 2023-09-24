@@ -34,6 +34,12 @@ services:
     networks:
       - frontend
       - default
+    labels:
+      - homepage.group=System
+      - homepage.icon=minecraft.png
+      - homepage.name=Minecraft router
+      - homepage.description=Server router
+      - homepage.showStats=true
 
   vlad:
     depends_on:
@@ -59,6 +65,7 @@ services:
       - homepage.widget.type=minecraft
       - homepage.description=Vlad's minecraft server
       - homepage.widget.url=udp://mc1.$MINECRAFT_HOST:25565
+      - homepage.showStats=true
 
   artem:
     <<: *base_server
@@ -80,6 +87,7 @@ services:
       - homepage.widget.type=minecraft
       - homepage.description=Artem's minecraft server
       - homepage.widget.url=udp://mc2.$MINECRAFT_HOST:25565
+      - homepage.showStats=true
 
   artemmodded:
     <<: *base_server
@@ -104,6 +112,7 @@ services:
       - homepage.widget.type=minecraft
       - homepage.description=Artems's modded minecraft server
       - homepage.widget.url=udp://mc3.$MINECRAFT_HOST:25565
+      - homepage.showStats=true
 
   bedrock:
     <<: *base_server
@@ -125,6 +134,7 @@ services:
       - homepage.icon=minecraft.png
       - homepage.name=Minecraft Bedrock
       - homepage.description=Vlad's minecraft server
+      - homepage.showStats=true
 
   map:
     <<: *base_service
@@ -139,6 +149,13 @@ services:
     labels:
       - traefik.enable=true
       - traefik.custom.subdomain=map
+      - homepage.group=Games
+      - homepage.icon=minecraft.png
+      - homepage.name=Minecraft map
+      - homepage.widget.type=minecraft
+      - homepage.description=Map of Vlad's server
+      - homepage.href=https://map.$EXT_HOST
+      - homepage.showStats=true
   skins:
     <<: *base_service
     depends_on:
@@ -150,6 +167,13 @@ services:
     labels:
       - traefik.enable=true
       - traefik.custom.subdomain=skins
+      - homepage.group=Games
+      - homepage.icon=minecraft.png
+      - homepage.name=Minecraft skins
+      - homepage.widget.type=minecraft
+      - homepage.description=Skins for Vlad's server
+      - homepage.href=https://skins.$EXT_HOST
+      - homepage.showStats=true
     volumes:
       - ./config.nogit.php:/var/www/html/config.nogit.php
 

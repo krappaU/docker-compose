@@ -239,6 +239,7 @@ services:
       - homepage.name=Harbor
       - homepage.description=Docker image repository
       - homepage.href=https://harbor.$EXT_HOST
+      - homepage.showStats=true
     depends_on:
       - registry
       - core

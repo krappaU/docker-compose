@@ -40,6 +40,7 @@ services:
       - homepage.name=Stable diffusiion
       - homepage.description=Web UI
       - homepage.href=https://sd.$EXT_HOST
+      - homepage.showStats=true
     image: sd-auto:67
     environment:
       - CLI_ARGS=--allow-code --medvram --xformers --enable-insecure-extension-access --api

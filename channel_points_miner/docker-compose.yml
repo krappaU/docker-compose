@@ -20,6 +20,8 @@ services:
       - homepage.name=Points miner
       - homepage.description=Twitch points
       - homepage.href=https://twitch-points.$EXT_HOST
+      - homepage.showStats=true
+
 
   web:
     image: mrcraftcod/channel-points-miner-viewer:latest
