@@ -25,6 +25,8 @@ services:
       - homepage.widget.type=emby
       - homepage.widget.url=https://emby.$EXT_HOST
       - homepage.widget.key=$API_KEY
+      - homepage.widget.enableBlocks=true
+      - homepage.widget.enableNowPlaying=false
     deploy:
       resources:
         reservations:

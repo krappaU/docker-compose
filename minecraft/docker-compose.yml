@@ -152,7 +152,6 @@ services:
       - homepage.group=Games
       - homepage.icon=minecraft.png
       - homepage.name=Minecraft map
-      - homepage.widget.type=minecraft
       - homepage.description=Map of Vlad's server
       - homepage.href=https://map.$EXT_HOST
       - homepage.showStats=true
@@ -170,7 +169,6 @@ services:
       - homepage.group=Games
       - homepage.icon=minecraft.png
       - homepage.name=Minecraft skins
-      - homepage.widget.type=minecraft
       - homepage.description=Skins for Vlad's server
       - homepage.href=https://skins.$EXT_HOST
       - homepage.showStats=true
