@@ -31,7 +31,7 @@ services:
       - traefik.http.routers.channel-points-miner-web.rule=Host(`$HOSTNAME`) || Host(`twitch-points.$EXT_HOST`)
 
   db:
-    image: mariadb:10.8
+    image: mariadb:latest
     restart: unless-stopped
     volumes:
       - ./data:/var/lib/mysql
