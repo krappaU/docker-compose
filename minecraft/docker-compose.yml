@@ -77,7 +77,7 @@ services:
       - MAX_MEMORY=4G
     labels:
       - homepage.description=Artem's minecraft server
-      - homepage.url=udp://mc2.$MINECRAFT_HOST:25565
+      - homepage.widget.url=udp://mc2.$MINECRAFT_HOST:25565
 
   artemmodded:
     <<: *base_server
