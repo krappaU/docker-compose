@@ -1,0 +1,30 @@
+version: "3"
+services:
+  navidrome:
+    image: deluan/navidrome:latest
+    user: 1000:1000
+    restart: unless-stopped
+    environment:
+      ND_SCANSCHEDULE: 1h
+      ND_SESSIONTIMEOUT: 3600h
+      ND_BASEURL: "https://navidrome.yurusov.com"
+    volumes:
+      - "./data:/data"
+      - "/mnt/2tb/Music:/music:ro"
+    networks: 
+      - frontend
+    labels:
+      - traefik.enable=true
+      - homepage.group=Media
+      - homepage.name=Navidrome
+      - homepage.icon=navidrome.png
+      - homepage.href=https://navidrome.$EXT_HOST
+      - homepage.description=Music player
+      - homepage.widget.type=navidrome
+      - homepage.widget.url=https://navidrome.$EXT_HOST
+      - homepage.widget.user=$USER
+      - homepage.widget.salt=$SALT
+      - homepage.widget.token=$TOKEN
+networks:
+  frontend:
+    external: true

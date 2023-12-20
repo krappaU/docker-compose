@@ -1,0 +1,21 @@
+version: "3"
+services:
+  picard:
+    image: mikenye/picard:latest
+    restart: unless-stopped
+    volumes:
+      - "./config:/config"
+      - "/mnt/2tb/Music:/music:rw"
+    networks: 
+      - frontend
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.picard-picard.middlewares=basic-auth
+      - homepage.group=Media
+      - homepage.name=Picard
+      - homepage.icon=https://picard.musicbrainz.org/static/img/picard-icon-large.svg
+      - homepage.href=https://picard.$EXT_HOST
+      - homepage.description=Music tags manager
+networks:
+  frontend:
+    external: true
