@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   app:
-    image: nextcloud:25-fpm
+    image: nextcloud:27-apache
     environment:
       - MYSQL_HOST=db
       - MYSQL_DATABASE=nextcloud
@@ -10,34 +10,15 @@ services:
     volumes:
       - /mnt/2tb/Docker/nextcloud/www:/var/www/html
       - /mnt/2tb/Docker/nextcloud/data:/var/www/html/data
+      - /mnt/2tb/Docker/nextcloud/shared:/shared
       - /mnt:/mnt:ro
     restart: unless-stopped
-    networks:
-      - default
-
-  db:
-    image: mariadb
-    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
-    restart: unless-stopped
-    volumes:
-      - /mnt/2tb/Docker/nextcloud/db:/var/lib/mysql
-    environment:
-      - MYSQL_DATABASE=nextcloud
-      - MYSQL_USER=nextcloud
-      - MYSQL_ROOT_PASSWORD
-      - MYSQL_PASSWORD
-    networks:
-      - default
-
-  web:
-    image: nginx
-    restart: unless-stopped
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-    volumes_from:
-      - app
     labels:
       - traefik.enable=true
+      - traefik.http.routers.app-nextcloud.middlewares=nextcloud_redirectregex
+      - traefik.http.middlewares.nextcloud_redirectregex.redirectregex.permanent=true
+      - traefik.http.middlewares.nextcloud_redirectregex.redirectregex.regex=https://(.*)/.well-known/(?:card|cal)dav
+      - traefik.http.middlewares.nextcloud_redirectregex.redirectregex.replacement=https://$${1}/remote.php/dav
       - homepage.group=Services
       - homepage.name=Nextcloud
       - homepage.icon=nextcloud.png
@@ -50,6 +31,22 @@ services:
       - frontend
       - default
  
+  db:
+    image: mariadb
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW 
+    restart: unless-stopped
+    volumes:
+      - /mnt/2tb/Docker/nextcloud/db:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_ROOT_PASSWORD
+      - MARIADB_AUTO_UPGRADE=1
+      - MARIADB_DISABLE_UPGRADE_BACKUP=1
+      - MYSQL_PASSWORD
+    networks:
+      - default
+
 networks:
   frontend:
     external: true

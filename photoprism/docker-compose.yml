@@ -36,11 +36,10 @@ services:
       - PHOTOPRISM_SITE_TITLE=PhotoPrism
       - PHOTOPRISM_SITE_CAPTION=AI-Powered Photos App
       - PHOTOPRISM_FFMPEG_ENCODER=nvidia
-      - PHOTOPRISM_INIT=tensorflow
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=compute,video,utility
       ## Run/install on first startup (options: update, gpu, tensorflow, davfs, nano, clean):
-      - PHOTOPRISM_INIT=gpu tensorflow"
+      - PHOTOPRISM_INIT=gpu tensorflow 
       ## Hardware video transcoding config (optional)
       # - PHOTOPRISM_FFMPEG_BUFFERS=64                # FFmpeg capture buffers (default: 32)
       # - PHOTOPRISM_FFMPEG_BITRATE=32                # FFmpeg encoding bitrate limit in Mbit/s (default: 50)
@@ -64,7 +63,7 @@ services:
       - traefik.enable=true
       - traefik.custom.subdomain=photos
       - traefik.http.services.photoprism.loadbalancer.server.port=2342
-      - homepage.group=Services
+      - homepage.group=Media
       - homepage.name=PhotoPrism
       - homepage.icon=photoprism.png
       - homepage.href=https://photos.$EXT_HOST
@@ -75,6 +74,7 @@ services:
       - homepage.widget.password=$HOMEPAGE_PASSWORD
     volumes:
       - /mnt/2tb/Pictures/Photo:/photoprism/originals
+      - /mnt/2tb/Docker/nextcloud/shared:/photoprism/originals/nextcloud
       - /mnt/2tb/Docker/photoprism/storage:/photoprism/storage 
     networks:
       - frontend
