@@ -27,7 +27,6 @@ services:
       - homepage.widget.url=https://jellyfin.$EXT_HOST
       - homepage.widget.key=$API_KEY
       - homepage.widget.enableBlocks=true
-      - homepage.widget.enableNowPlaying=false
     deploy:
       resources:
         reservations:

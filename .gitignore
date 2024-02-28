@@ -8,6 +8,8 @@ data/
 output/
 test/
 cache/
+game/
+backup/
 
 common.yml
 fredboat.yml

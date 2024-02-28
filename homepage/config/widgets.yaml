@@ -8,9 +8,9 @@
     expanded: true
     disk:
         - /
+        - /mnt/8tb
         - /mnt/2tb
         - /mnt/1tb
-        - /mnt/500gb
 
 - search:
     provider: duckduckgo

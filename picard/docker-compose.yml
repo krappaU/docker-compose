@@ -16,6 +16,7 @@ services:
       - homepage.icon=https://picard.musicbrainz.org/static/img/picard-icon-large.svg
       - homepage.href=https://picard.$EXT_HOST
       - homepage.description=Music tags manager
+      - homepage.showStats=true
 networks:
   frontend:
     external: true

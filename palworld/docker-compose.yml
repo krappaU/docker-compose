@@ -1,0 +1,37 @@
+version: "3.8"
+services:
+  server:
+    image: jammsen/palworld-dedicated-server:latest
+    restart: unless-stopped
+    ports:
+      - "25569:8211/udp"
+    environment:
+      - ALWAYS_UPDATE_ON_START=true
+      - MAX_PLAYERS=32
+      - MULTITHREAD_ENABLED=true
+      - COMMUNITY_SERVER=true
+      - RCON_ENABLED=true
+      - PUBLIC_PORT=25569
+      - PUBLIC_IP
+      - SERVER_NAME
+      - SERVER_DESCRIPTION
+      - SERVER_PASSWORD
+      - ADMIN_PASSWORD
+    volumes:
+      - ./game:/palworld
+    labels:
+      - homepage.group=Games
+      - homepage.icon=https://static.wikia.nocookie.net/palworld/images/4/4a/Site-favicon.ico
+      - homepage.name=Palworld
+      - homepage.description=Parworld game server
+        # - homepage.widget.type=gamedig
+        # - homepage.widget.serverType=palworld
+        # - homepage.widget.url=udp://$PUBLIC_IP:25569
+        # - homepage.widget.fields=[\"players\",\"currentPlayers\",\"maxPlayers\",\"status\"]
+      - homepage.showStats=true
+
+  rcon:
+    image: outdead/rcon:latest
+    entrypoint: ['/rcon', '-a', 'server:25575', '-p', $ADMIN_PASSWORD]
+    profiles: ['rcon']
+
