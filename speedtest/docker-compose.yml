@@ -1,0 +1,14 @@
+services:
+  web:
+    image: openspeedtest/latest
+    restart: unless-stopped
+    networks: 
+      - frontend
+    labels:
+      - traefik.enable=true
+      - traefik.http.middlewares.limit.buffering.maxRequestBodyBytes=10000000000
+      - traefik.http.routers.speedtest.middlewares=limit
+
+networks:
+  frontend:
+    external: true

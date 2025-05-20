@@ -1,7 +1,8 @@
-version: "3.8"
+version: '2.3'
 services:
   log:
     image: goharbor/harbor-log:v2.5.1
+    container_name: harbor-log
     restart: always
     cap_drop:
       - ALL
@@ -21,9 +22,10 @@ services:
     ports:
       - 127.0.0.1:1514:10514
     networks:
-      - default
+      - harbor
   registry:
     image: goharbor/registry-photon:v2.5.1
+    container_name: registry
     restart: always
     cap_drop:
       - ALL
@@ -41,7 +43,7 @@ services:
         source: ./common/config/shared/trust-certificates
         target: /harbor_cust_cert
     networks:
-      - default
+      - harbor
     depends_on:
       - log
     logging:
@@ -51,8 +53,9 @@ services:
         tag: "registry"
   registryctl:
     image: goharbor/harbor-registryctl:v2.5.1
+    container_name: registryctl
     env_file:
-      - ./common/config/registryctl/.env
+      - ./common/config/registryctl/env
     restart: always
     cap_drop:
       - ALL
@@ -70,7 +73,7 @@ services:
         source: ./common/config/shared/trust-certificates
         target: /harbor_cust_cert
     networks:
-      - default
+      - harbor
     depends_on:
       - log
     logging:
@@ -80,6 +83,7 @@ services:
         tag: "registryctl"
   postgresql:
     image: goharbor/harbor-db:v2.5.1
+    container_name: harbor-db
     restart: always
     cap_drop:
       - ALL
@@ -91,9 +95,9 @@ services:
     volumes:
       - /mnt/2tb/Docker/harbor/database:/var/lib/postgresql/data:z
     networks:
-      - default
+      harbor:
     env_file:
-      - ./common/config/db/.env
+      - ./common/config/db/env
     depends_on:
       - log
     logging:
@@ -104,8 +108,9 @@ services:
     shm_size: '1gb'
   core:
     image: goharbor/harbor-core:v2.5.1
+    container_name: harbor-core
     env_file:
-      - ./common/config/core/.env
+      - ./common/config/core/env
     restart: always
     cap_drop:
       - ALL
@@ -129,7 +134,7 @@ services:
         source: ./common/config/shared/trust-certificates
         target: /harbor_cust_cert
     networks:
-      - default
+      harbor:
     depends_on:
       - log
       - registry
@@ -142,6 +147,7 @@ services:
         tag: "core"
   portal:
     image: goharbor/harbor-portal:v2.5.1
+    container_name: harbor-portal
     restart: always
     cap_drop:
       - ALL
@@ -155,7 +161,7 @@ services:
         source: ./common/config/portal/nginx.conf
         target: /etc/nginx/nginx.conf
     networks:
-      - default
+      - harbor
     depends_on:
       - log
     logging:
@@ -166,8 +172,9 @@ services:
 
   jobservice:
     image: goharbor/harbor-jobservice:v2.5.1
+    container_name: harbor-jobservice
     env_file:
-      - ./common/config/jobservice/.env
+      - ./common/config/jobservice/env
     restart: always
     cap_drop:
       - ALL
@@ -184,7 +191,7 @@ services:
         source: ./common/config/shared/trust-certificates
         target: /harbor_cust_cert
     networks:
-      - default
+      - harbor
     depends_on:
       - core
     logging:
@@ -194,6 +201,7 @@ services:
         tag: "jobservice"
   redis:
     image: goharbor/redis-photon:v2.5.1
+    container_name: redis
     restart: always
     cap_drop:
       - ALL
@@ -204,7 +212,7 @@ services:
     volumes:
       - /mnt/2tb/Docker/harbor/redis:/var/lib/redis
     networks:
-      - default
+      harbor:
     depends_on:
       - log
     logging:
@@ -214,6 +222,7 @@ services:
         tag: "redis"
   proxy:
     image: goharbor/nginx-photon:v2.5.1
+    container_name: nginx
     restart: always
     cap_drop:
       - ALL
@@ -228,18 +237,9 @@ services:
         source: ./common/config/shared/trust-certificates
         target: /harbor_cust_cert
     networks:
-      - default
-      - frontend
-    labels:
-      - traefik.enable=true
-      - traefik.custom.subdomain=harbor
-      - traefik.http.services.harbor.loadbalancer.server.port=8080
-      - homepage.group=Services
-      - homepage.icon=harbor.png
-      - homepage.name=Harbor
-      - homepage.description=Docker image repository
-      - homepage.href=https://harbor.$EXT_HOST
-      - homepage.showStats=true
+      - harbor
+    ports:
+      - 80:8080
     depends_on:
       - registry
       - core
@@ -251,5 +251,5 @@ services:
         syslog-address: "tcp://localhost:1514"
         tag: "proxy"
 networks:
-  frontend:
-    external: true
+  harbor:
+    external: false

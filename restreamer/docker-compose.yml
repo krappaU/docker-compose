@@ -1,0 +1,21 @@
+services:
+  restreamer:
+    image: datarhei/restreamer:latest
+    restart: unless-stopped
+    ports:
+      - 1935:1935
+      - 1936:1936
+      - 6000:6000/udp
+    volumes:
+      - ./config:/core/config
+      - ./data:/core/data
+    networks: 
+      - frontend
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.restreamer.loadbalancer.server.port=8080
+      - traefik.http.routers.restreamer.rule=Host(`$HOSTNAME`)
+
+networks:
+  frontend:
+    external: true

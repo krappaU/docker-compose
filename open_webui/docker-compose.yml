@@ -1,0 +1,52 @@
+services:
+  ollama:
+    volumes:
+      - /mnt/8tb/Docker/ollama:/root/.ollama
+    container_name: ollama
+    pull_policy: always
+    tty: true
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0']
+              capabilities: [gpu]
+    image: ollama/ollama:${OLLAMA_DOCKER_TAG-latest}
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:${WEBUI_DOCKER_TAG-main}
+    container_name: open-webui
+    volumes:
+      - /mnt/8tb/Docker/open-webui:/app/backend/data
+    depends_on:
+      - ollama
+    networks:
+      - frontend
+      - default  
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - WEBUI_SECRET_KEY=
+      - ENABLE_IMAGE_GENERATION=true
+      - AUTOMATIC1111_BASE_URL=http://stable_diffussion_webui:7860
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.open-webui.loadbalancer.server.port=8080
+      - traefik.custom.subdomain=llm
+        #- homepage.group=Media
+        #- homepage.name=Jellyfin
+        #- homepage.icon=jellyfin.png
+        #- homepage.href=https://jellyfin.$EXT_HOST
+        #- homepage.description=Media server
+        #- homepage.widget.type=jellyfin
+        #- homepage.widget.url=https://jellyfin.$EXT_HOST
+        #- homepage.widget.key=$API_KEY
+        #- homepage.widget.enableBlocks=true
+    restart: unless-stopped
+
+networks:
+  frontend:
+    external: true

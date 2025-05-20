@@ -1,4 +1,3 @@
-version: "3.8"
 services:
   app:
     image: nextcloud:27-apache
@@ -11,7 +10,7 @@ services:
       - /mnt/2tb/Docker/nextcloud/www:/var/www/html
       - /mnt/2tb/Docker/nextcloud/data:/var/www/html/data
       - /mnt/2tb/Docker/nextcloud/shared:/shared
-      - /mnt:/mnt:ro
+      - /mnt:/mnt
     restart: unless-stopped
     labels:
       - traefik.enable=true

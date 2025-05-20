@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   socket_proxy:
     image: tecnativa/docker-socket-proxy
@@ -9,7 +7,7 @@ services:
     environment:
       CONTAINERS: 1
     networks:
-      - socket_proxy
+      - default
 
   traefik:
     image: traefik:latest
@@ -25,14 +23,18 @@ services:
       - 8080:8080
     volumes:
       - $PWD/traefik.yml:/etc/traefik/traefik.yml
+      - $PWD/acme.json:/etc/traefik/acme.json
     networks:
       - frontend
-      - socket_proxy
+      - default
     labels:
       - traefik.enable=true
       - traefik.http.middlewares.basic-auth.basicauth.users=$USERS
       - traefik.http.routers.traefik.service=api@internal
-      - traefik.http.routers.traefik.middlewares=basic-auth
+      - traefik.http.middlewares.authentik-auth.forwardauth.address=http://authentik-server:9000/outpost.goauthentik.io/auth/traefik-forwardauth
+      - traefik.http.middlewares.authentik-auth.forwardauth.trustForwardHeader=true
+      - traefik.http.middlewares.authentik-auth.forwardauth.authResponseHeaders=X-authentik-username,X-authentik-groups
+      - traefik.http.routers.traefik.middlewares=authentik-auth
       - homepage.group=System
       - homepage.name=Traefik
       - homepage.href=https://traefik.$EXT_HOST
@@ -41,8 +43,83 @@ services:
       - homepage.widget.type=traefik
       - homepage.widget.url=http://traefik:8080
 
+  authentik-server:
+    image: ghcr.io/goauthentik/server:latest
+    restart: unless-stopped
+    command: server
+    environment:
+      - AUTHENTIK_SECRET_KEY
+      - AUTHENTIK_REDIS__HOST
+      - AUTHENTIK_POSTGRESQL__HOST
+      - AUTHENTIK_POSTGRESQL__USER
+      - AUTHENTIK_POSTGRESQL__PASSWORD
+      - AUTHENTIK_POSTGRESQL__NAME
+      - AUTHENTIK_REDIS__HOST=authentik-redis
+      - AUTHENTIK_REDIS__PORT=6379
+      - AUTHENTIK_REDIS__DB=0
+    volumes:
+      - ./authentik/media:/media
+      - ./authentik/custom-templates:/templates
+    user: root
+    networks:
+      - frontend
+      - default
+    depends_on:
+      - authentik-db
+      - authentik-redis
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.authentik.rule=Host(`auth.$EXT_HOST`)
+      - traefik.http.routers.authentik.entrypoints=websecure
+      - traefik.http.routers.authentik.tls=true
+      - traefik.http.routers.authentik.tls.certresolver=cloudflare
+      - traefik.http.services.authentik.loadbalancer.server.port=9000
+      - homepage.group=System
+      - homepage.name=Authentik
+      - homepage.href=https://auth.$EXT_HOST
+      - homepage.icon=auth0.png
+      - homepage.description=Identity Provider
+
+  authentik-db:
+    image: postgres:15
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${AUTHENTIK_POSTGRESQL__USER}
+      - POSTGRES_PASSWORD=${AUTHENTIK_POSTGRESQL__PASSWORD}
+      - POSTGRES_DB=${AUTHENTIK_POSTGRESQL__NAME}
+    volumes:
+      - ./authentik/db:/var/lib/postgresql/data
+    networks:
+      - default
+
+  authentik-redis:
+    image: redis:7
+    restart: unless-stopped
+    networks:
+      - default
+
+  authentik-worker:
+    image: ghcr.io/goauthentik/server:latest
+    restart: unless-stopped
+    user: root
+    depends_on:
+      - authentik-db
+      - authentik-redis
+    environment:
+      - AUTHENTIK_SECRET_KEY=${AUTHENTIK_SECRET_KEY}
+      - AUTHENTIK_POSTGRESQL__HOST=${AUTHENTIK_POSTGRESQL__HOST}
+      - AUTHENTIK_POSTGRESQL__USER=${AUTHENTIK_POSTGRESQL__USER}
+      - AUTHENTIK_POSTGRESQL__PASSWORD=${AUTHENTIK_POSTGRESQL__PASSWORD}
+      - AUTHENTIK_POSTGRESQL__NAME=${AUTHENTIK_POSTGRESQL__NAME}
+      - AUTHENTIK_REDIS__HOST=authentik-redis
+      - AUTHENTIK_REDIS__PORT=6379
+      - AUTHENTIK_REDIS__DB=0
+    command: worker
+    networks:
+      - default
+
+
 networks:
   frontend:
     external: true
-  socket_proxy:
 

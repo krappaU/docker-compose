@@ -3,6 +3,7 @@
 passwords
 passwd
 root.crt
+acme.json
 
 data/
 output/

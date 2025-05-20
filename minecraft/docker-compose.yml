@@ -1,5 +1,3 @@
-version: "3.8"
-
 x-base_service: &base_service
     restart: unless-stopped
     networks:
@@ -8,6 +6,8 @@ x-base_service: &base_service
 x-base_server: &base_server
     <<: *base_service
     image: itzg/minecraft-server
+    depends_on:
+      - router
 
 services:
   database:
@@ -30,7 +30,7 @@ services:
       - 25565:25565
       # bind the API port to only loopback to avoid external exposure
       - 127.0.0.1:25564:25564
-    command: --mapping="mc1.$MINECRAFT_HOST=vlad:25565,mc2.$MINECRAFT_HOST=artem:25565,mc3.$MINECRAFT_HOST=artemmodded:25565"
+    command: --mapping="mc1.$MINECRAFT_HOST=vlad121:25565,mc2.$MINECRAFT_HOST=artem:25565,mc3.$MINECRAFT_HOST=artemmodded:25565"
     networks:
       - frontend
       - default
@@ -41,13 +41,13 @@ services:
       - homepage.description=Server router
       - homepage.showStats=true
 
-  vlad:
+  vlad119:
     depends_on:
       - database
     <<: *base_server
     command: --noconsole
     volumes:
-      - /srv/minecraft/:/data
+      - /mnt/8tb/Docker/minecraft_vlad_1_19/:/data
       - /mnt/2tb/Docker/minecraft_backups:/data/plugins/eBackup/backups/
     environment:
       - VERSION=1.19.2
@@ -67,10 +67,35 @@ services:
       - homepage.widget.url=udp://mc1.$MINECRAFT_HOST:25565
       - homepage.showStats=true
 
+  vlad121:
+    depends_on:
+      - database
+    <<: *base_server
+    command: --noconsole
+    volumes:
+      - /mnt/8tb/Docker/minecraft_vlad_1_21/:/data
+    environment:
+      - VERSION=1.21
+      - EULA=TRUE
+      - CONSOLE=FALSE
+      - SERVER_NAME=Krappa
+      - TYPE=SPIGOT
+      - INIT_MEMORY=3G
+      - MAX_MEMORY=6G
+      - SPIGET_RESOURCES=2124,17311,19254,28140,62325,64270
+    labels:
+      - homepage.group=Games
+      - homepage.icon=minecraft.png
+      - homepage.name=Minecraft Vlad
+      - homepage.widget.type=minecraft
+      - homepage.description=Vlad's minecraft server
+      - homepage.widget.url=udp://mc1.$MINECRAFT_HOST:25565
+      - homepage.showStats=true
+ 
   artem:
     <<: *base_server
     volumes:
-      - /srv/minecraft_artem/:/data
+      - /mnt/8tb/Docker/minecraft_artem/:/data
     networks:
       - default
     environment:
@@ -93,13 +118,11 @@ services:
     <<: *base_server
     image: itzg/minecraft-server:java8-multiarch
     volumes:
-      - /srv/minecraft_artem_modded/:/data
+      - /mnt/8tb/Docker/minecraft_artem_modded/:/data
     environment:
-      - VERSION=1.12.2
+      - VERSION=1.18.2
       - SERVER_NAME=Industrial craft
       - TYPE=FORGE
-      - FTB_MODPACK_ID-36
-      - FTB_MODPACK_VERSION_ID=147
       - EULA=TRUE
       - INIT_MEMORY=2G
       - MAX_MEMORY=4G
@@ -118,7 +141,7 @@ services:
     <<: *base_server
     image: itzg/minecraft-bedrock-server
     volumes:
-      - /srv/minecraft_bedrock/:/data
+      - /mnt/8tb/Docker/minecraft_bedrock/:/data
     networks:
       - frontend
     ports:
@@ -135,17 +158,21 @@ services:
       - homepage.name=Minecraft Bedrock
       - homepage.description=Vlad's minecraft server
       - homepage.showStats=true
+      - homepage.widget.type=gamedig
+      - homepage.widget.serverType=mbe
+      - homepage.widget.url=udp://bedrock:19132
+      - homepage.widget.fields=["version", "status", "currentPlayers"] 
 
   map:
     <<: *base_service
     depends_on:
       - database
-    image: richarvey/nginx-php-fpm:1.10.3
+    image: richarvey/nginx-php-fpm:latest
     networks:
       - default
       - frontend
     volumes:
-      - /srv/minecraft/plugins/dynmap/web:/var/www/html/
+      - /mnt/8tb/Docker/minecraft_vlad_1_21/plugins/dynmap/web:/var/www/html/
     labels:
       - traefik.enable=true
       - traefik.custom.subdomain=map
@@ -155,6 +182,7 @@ services:
       - homepage.description=Map of Vlad's server
       - homepage.href=https://map.$EXT_HOST
       - homepage.showStats=true
+
   skins:
     <<: *base_service
     depends_on:

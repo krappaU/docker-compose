@@ -1,5 +1,3 @@
-version: "3.9"
-
 x-base_service: &base_service
     ports:
       - 7860:7860
@@ -7,20 +5,21 @@ x-base_service: &base_service
     volumes:
       - &v1 /mnt/2tb/Docker/stable_diffusion/data:/data
       - &v2 /mnt/2tb/Docker/stable_diffusion/output:/output
-    stop_signal: SIGINT
+    stop_signal: SIGKILL
+    tty: true
     deploy:
       resources:
         reservations:
           devices:
               - driver: nvidia
                 device_ids: ['0']
-                capabilities: [gpu]
+                capabilities: [compute, utility]
 
 name: stable_diffussion_webui
 
 services:
   download:
-    build: ./services/download/
+    image: simonmcnair/download:master
     profiles: ["download"]
     volumes:
       - *v1
@@ -28,12 +27,11 @@ services:
   auto: &automatic
     <<: *base_service
     profiles: ["auto"]
-    build: ./services/AUTOMATIC1111
     networks:
       - frontend
     labels:
       - traefik.enable=true
-      - traefik.http.routers.auto-stable-diffussion-webui.rule=Host(`$HOSTNAME`) || Host(`sd.$EXT_HOST`)
+      - traefik.custom.subdomain=sd
       - traefik.http.routers.auto-stable-diffussion-webui.middlewares=basic-auth
       - homepage.group=Services
       - homepage.icon=mdi-palette
@@ -41,7 +39,7 @@ services:
       - homepage.description=Web UI
       - homepage.href=https://sd.$EXT_HOST
       - homepage.showStats=true
-    image: sd-auto:67
+    image: simonmcnair/automatic1111:master
     environment:
       - CLI_ARGS=--allow-code --medvram --xformers --enable-insecure-extension-access --api
 
